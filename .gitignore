@@ -1,0 +1,8 @@
+# no temporary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.thm
+*.synctex.gz
