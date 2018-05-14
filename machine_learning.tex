@@ -1,12 +1,18 @@
 \documentclass[11pt, a4paper]{article}
 \usepackage{amsmath, amssymb}
 \usepackage[amsmath, thmmarks]{ntheorem}
-% =========== Package for pseudocode ============
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 % =========== 
 
-% ============================= Math Theorem Envs =============================
+
+% ============================= Pseudocode Customization =======================
+% Package: algorithm, algpseudocode.
+\algrenewcommand{\algorithmicrequire}{\textbf{Input:}}
+\algrenewcommand{\algorithmicensure}{\textbf{Output:}}
+
+
+% ============================= Math Theorem Envs ==============================
 \newtheorem{df}{Definition}[section]
 \newtheorem{thm}[df]{Theorem}
 \newtheorem{eg}[df]{Example}
@@ -21,15 +27,15 @@
 \newtheorem{pf}{Proof}
 
 
-% =============================== Operators ===================================
+% =============================== Operators ====================================
 \DeclareMathOperator{\ent}{Entropy}
 
 
-% =============================== New Commands ================================
+% =============================== New Commands =================================
 
 
 
-% =============================== Document ====================================
+% =============================== Document =====================================
 \begin{document}
 
 % ===============Section One: Linear Models================
