@@ -2,9 +2,35 @@
 Decision Tree.
 
 \begin{algorithm}
-    \caption{Decision Tree}
+    \caption{Decision Tree}\label{decision_tree}
     \begin{algorithmic}[1]
-        \Require bla
-        \Ensure hah
+        \Require training set $D = \{(x_1, y_1), (x_2, y_2), \ldots, (x_m, y_m)
+        \}$; attribute set $A = \{a_1, a_2, \ldots, a_d\}$.
+        \Ensure a decision tree.
+        \Procedure{DT}{$D, A$}
+            \State Generate a node.
+            \If{$y_i = c, \forall i = 1, \ldots, m$} \Comment{All samples have 
+            the same label}
+                \State mark the node as a leaf with label $c$; \Return
+            \EndIf
+            \If{$A = \emptyset$ \OR samples of $D$ have the same value on each
+            attribute from $A$}
+                \State mark the node as a leaf with the majority label of $D$; 
+                \Return
+            \EndIf
+            \State Choose the \textit{best} attribute $a_*$ from $A$.\label{measurement}
+            \ForAll{possible value $a_*^v$ of $a_*$}
+                \State generate a branch from node.
+                \State let $D_v$ be all samples that take value $a_*^v$ on attribute
+                $a_*$.
+                \If{$D_v = \emptyset$} \Comment{no sample of $D$ takes value $a_*^v$
+                on $a_*$}
+                    \State mark the branch as a leaf with the majority label of 
+                    $D$; \Return
+                \Else
+                    \State set the branch to \Call{DT}{$D_v, A-\{a_*\}$}.
+                \EndIf
+            \EndFor
+        \EndProcedure
     \end{algorithmic}
 \end{algorithm}
