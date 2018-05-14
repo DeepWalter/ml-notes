@@ -1,0 +1,41 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[amsmath, thmmarks]{ntheorem}
+% =========== Package for pseudocode ============
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% =========== 
+
+% ============================= Math Theorem Envs =============================
+\newtheorem{df}{Definition}[section]
+\newtheorem{thm}[df]{Theorem}
+\newtheorem{eg}[df]{Example}
+\newtheorem{prop}[df]{Proposition}
+\newtheorem{lem}[df]{Lemma}
+\newtheorem{cor}[df]{Corollary}
+\newtheorem{re}[df]{Remark}
+
+% Customize proof env.
+\theoremstyle{nonumberplain} % no numbering
+\theoremsymbol{\(\square\)}    % proof end with square.
+\newtheorem{pf}{Proof}
+
+
+% =============================== Operators ===================================
+\DeclareMathOperator{\ent}{Entropy}
+
+
+% =============================== New Commands ================================
+
+
+
+% =============================== Document ====================================
+\begin{document}
+
+% ===============Section One: Linear Models================
+\include{sections/linear_model}
+
+% ===============Section Two: Decision Trees===============
+\include{sections/decision_tree}
+
+\end{document}
