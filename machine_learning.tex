@@ -1,5 +1,5 @@
 \documentclass[11pt, a4paper]{article}
-\usepackage{amsmath, amssymb}
+\usepackage{amsmath, amssymb, amsbsy}
 \usepackage[amsmath, thmmarks]{ntheorem}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -37,6 +37,12 @@
 \newcommand{\AND}{\textbf{AND} } 
 \newcommand{\XOR}{\textbf{XOR} } 
 
+% Math commands:
+\newcommand{\T}[1]{\ensuremath{{#1}^\mathsf{T}}} % Matrix transposition.
+\newcommand{\inv}[1]{\ensuremath{{#1}^{-1}}} % Inversion.
+\newcommand{\V}[1]{\ensuremath{\boldsymbol{#1}}}
+
+
 % =============================== Document =====================================
 \begin{document}
 
@@ -46,4 +52,6 @@
 % ===============Section Two: Decision Trees===============
 \include{sections/decision_tree}
 
+% ===============Section Three: SVM========================
+\include{sections/svm}
 \end{document}

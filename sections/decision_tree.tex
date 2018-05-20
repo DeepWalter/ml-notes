@@ -1,6 +1,7 @@
 \section{Decision Trees}
 Decision Tree.
 
+% Pseudocode of decision tree algorithm.
 \begin{algorithm}
     \caption{Decision Tree}\label{decision_tree}
     \begin{algorithmic}[1]
@@ -13,8 +14,9 @@ Decision Tree.
             the same label}
                 \State mark the node as a leaf with label $c$; \Return
             \EndIf
-            \If{$A = \emptyset$ \OR samples of $D$ have the same value on each
-            attribute from $A$}
+            \If{$A = \emptyset$ \OR samples of $D$ take the same value on each
+            attribute from $A$}\Comment{attributes from $A$ cannot distinguish
+            elements of $D$}
                 \State mark the node as a leaf with the majority label of $D$; 
                 \Return
             \EndIf
@@ -34,3 +36,4 @@ Decision Tree.
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+
