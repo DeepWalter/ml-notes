@@ -10,6 +10,9 @@
 % Packages: algorithm, algpseudocode.
 \algrenewcommand{\algorithmicrequire}{\textbf{Input:}}
 \algrenewcommand{\algorithmicensure}{\textbf{Output:}}
+\algnewcommand\algorithmicto{\textbf{to} } % a trailing space is needed.
+\algnewcommand\algorithmicbreak{\textbf{break}} % break keyword.
+\newcommand{\breakif}[1]{\State \textbf{if} {#1} \textbf{then break}}
 
 
 % ============================= Math Theorem Envs ==============================
@@ -29,6 +32,8 @@
 
 % =============================== Operators ====================================
 \DeclareMathOperator{\ent}{Entropy}
+\DeclareMathOperator*{\p}{P}
+\DeclareMathOperator{\sign}{sign}
 
 
 % =============================== New Commands =================================
@@ -46,12 +51,21 @@
 % =============================== Document =====================================
 \begin{document}
 
-% ===============Section One: Linear Models================
+% ========Section One: Linear Models================
 \include{sections/linear_model}
 
-% ===============Section Two: Decision Trees===============
+% ========Section Two: Decision Trees===============
 \include{sections/decision_tree}
 
-% ===============Section Three: SVM========================
+% ========Section Three: SVM========================
 \include{sections/svm}
+
+% ========Section Four: Bayesian Classifier=========
+\include{sections/bayesian_classifier}
+
+% ========Section Five: Expectation Maximalization====
+\include{sections/EM}
+
+% ========Section Six: Ensemble Learning============
+\include{sections/ensemble_learning}
 \end{document}
