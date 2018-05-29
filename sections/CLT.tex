@@ -43,7 +43,7 @@ $$L_S(h) = \frac{1}{m}\sum_{i=1}^m \indi(h(\V{x})\neq f(\V{x}))$$
 \end{re}
 
 % PAC learnability.
-\begin{df}[PAC learnability]
+\begin{df}[PAC learnability]\label{PAC_learnability}
     The concept class $\mathcal{C}$ is PAC learnable w.r.t.\ a hypothesis space $\mathcal{H}$ if there exist
     \begin{enumerate}
         \item a function $m: {(0, 1)}^2 \longrightarrow \mathbb{N}$;
@@ -58,5 +58,10 @@ $$L_S(h) = \frac{1}{m}\sum_{i=1}^m \indi(h(\V{x})\neq f(\V{x}))$$
 \end{df}
 
 % sample complexity.
+\begin{df}[Sample complexity]
+    The sample complexity of a learn\-er is the minimal number of examples needed for the learner to produce a 
+    PAC solution. That is, it is the minimum of all $m(\varepsilon, \delta)$ where $m$ satisfies the 
+    requirements in definition~\ref{PAC_learnability}.
+\end{df}
 
 % agnostic PAC learnability.
