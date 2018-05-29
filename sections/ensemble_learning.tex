@@ -2,6 +2,7 @@
 
 \subsection{AdaBoost}
 
+% AdaBoost algorithm
 \begin{algorithm}
     \caption{AdaBoost}\label{AdaBoost}
     \begin{algorithmic}[1]
@@ -17,6 +18,26 @@
             \State $\mathcal{D}_{t + 1}(\V{x}) = \frac{\mathcal{D}_t(\V{x})\exp(-\alpha_t f(\V{x})h_t(\V{x}))}
             {Z_t}$.\Comment{$Z_t$ is the normalization factor.}
         \EndFor
-        \Ensure $H(\V{x}) = \sign(\sum_{t = 1}^T \alpha_t h_t(\V{x}))$
+        \Ensure $H(\V{x}) = \sign(\displaystyle\sum_{t = 1}^T \alpha_t h_t(\V{x}))$
     \end{algorithmic}
 \end{algorithm}
+
+\subsection{Bagging}
+
+% Bagging algorithm
+\begin{algorithm}
+    \caption{Bagging}\label{Bagging}
+    \begin{algorithmic}[1]
+        \Require training set $D = \{(\V{x}_1, y_1), \ldots, (\V{x}_m, y_m)\}$; base learner $\mathcal{L}$;
+        training round $T$.
+        \For{$t = 1$ \algorithmicto $T$}
+            \State $h_t = \mathcal{L}(D, \mathcal{D}_{bs})$\Comment{bs stands for bootstrap sampling.} 
+        \EndFor
+        \Ensure $H(\V{x}) = \displaystyle\argmax_{y\in \mathcal{Y}}\sum_{t=1}^T 1(h_t(\V{x}) = y)$\Comment{$H$
+        is the plurality vote of $h_t$.}
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Random Forest}
+
+% 
