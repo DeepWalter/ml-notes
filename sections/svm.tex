@@ -34,7 +34,7 @@ Let $\gamma \gets ||\V{w}||\gamma$, the above problem becomes:
 \end{equation}
 Using the linear separable assumption again, we know that $\gamma > 0$. Let $\V{w} \gets \frac{\V{w}}{\gamma}$
 and $b \gets \frac{b}{\gamma}$, then the above becomes:
-\begin{equation}
+\begin{equation}\label{SVM_argmax}
     \argmax_{\V{w}, b} \frac{1}{||\V{w}||}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1
     \quad\forall\ i
 \end{equation}
@@ -46,7 +46,7 @@ which is obviously equivalent to:
 
 % validity of the above analysis.
 \begin{thm}
-    Assume the training set \dataset\ is linear separable, then there exists a unique hyperplane separating
+    Assume the training set \dataset\ is \magenta{linear separable}, then there exists a unique hyperplane separating
     the dataset with the largest margin, which is given by the solution of the above 
     problem~\eqref{hard_SVM}.
 \end{thm}
@@ -55,7 +55,36 @@ which is obviously equivalent to:
     TODO
 \end{pf}
 
+\begin{re}
+    From the problem~\eqref{SVM_argmax}, it is clear that if $(\V{w}, b)$ is the separating hyperplane, then
+    $\exists~i\ \st y_i(\langle\V{w}, \V{x}_i\rangle + b) = 1$ and the largest margin is $\frac{1}{||\V{w}||}$.
+    Those $\V{x}_i$\,s are called \textbf{supporting vectors} of the hyperplane.
+\end{re}
+
 \subsection{Soft SVM}
+The hard SVM works well when the data set is linear separable, but it behaves poorly on the sets which are not
+linear separable since all the restrictions cannot be satisfied at the same time. In order to adapt to the 
+non-separable case, we can allow some points to break the restriction, and penalize them in the optimization
+target. That is, we can consider the following problem:
+\begin{equation}\label{soft_SVM_original}
+    \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\max(0, 1 - y_i(\T{\V{w}}\V{x}_i +b))
+\end{equation}
+Here, if $y_i(\T{\V{w}}\V{x}_i +b) < 1$, we add the penalization $1 - y_i(\T{\V{w}}\V{x}_i +b)$ to the 
+optimization target; otherwise, no penalization is added. The constant $C > 0$ is the weight that determines 
+how much the penalization matters (or how much you can violate the restrictions). For example, if $C = 0$, 
+then the penalization dosen't matter and you can violate all the restrictions; if $C = +\infty$, then the 
+penalization matters most and you cannot violate any single restriction.\par
+If we introduce the slack variabels $\xi_i = \max(0, 1 - y_i(\T{\V{w}}\V{x}_i +b))$, then
+the problem~\eqref{soft_SVM_original} becomes:
+\begin{equation}\label{soft_SVM}
+    \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\xi_i\quad\st\left\{
+    \begin{aligned}
+    & y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1 - \xi_i\\
+    & \xi_i \geq 0 
+    \end{aligned}\right.
+    \quad\forall~i
+\end{equation}
+this is what we called the soft SVM\@.
 
 \subsection{Duality}
 
