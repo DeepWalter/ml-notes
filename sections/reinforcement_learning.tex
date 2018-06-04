@@ -1,1 +1,194 @@
 \section{Reinforcement Learning}
+
+Let $X$ be the state space, $A$ the action space. Reinforcement learning can be described as a
+\textbf{Markov Decision Process}: system changes from a state to another under the actions from $A$ with a 
+rewarding function grading the change. That is, a reinforcement learning is a quadruple $E = \langle X, A, P,
+R\rangle$, where $P: X \times A \times X \longrightarrow \mathbb{R}$ describes the probability of a state
+changed into another via an action from $A$ and $R: X \times A \times X \longrightarrow \mathbb{R}$ describes
+the reward of that change. Sometimes the rewarding function only depends on states, that is $R: X \times X
+\longrightarrow \mathbb{R}$. Note that given a state $x$ and an action $a$ that can act on it, the resulting 
+state $x'$ may not be unique, but the identity $\sum_{x'\in X}P_{x\rightarrow x'}^a = 1$ always holds true.
+\par
+The goal of reinforcement leanring is to find a \hl{policy $\pi$} dictating which action to take given a state
+$x$. $\pi$ can be described in a determinate form $\pi: X \longrightarrow A$, which dictates that action
+$\pi(x)$ must be performed on state $x$. It can also be described in a probability form: $\pi: X \times A
+\longrightarrow \mathbb{R}$ where $\pi(x, a)$ is the probability of performing action $a$ on $x$. Obviously,
+the determinate form is a special case of the probability form. The performance measurement of the policy is 
+the accumulated reward gained from performing this policy for a reasonably long time. The \textbf{$T$ steps
+accumulated reward} $\E[\frac{1}{T}\sum_{t=1}^{T}r_t]$ and \textbf{$\gamma$ discount accumulated reward}
+$\E[\sum_{t=0}^{\infty}\gamma^t r_{t+1}]$ are two commonly used accumulated rewards, where $r_t$ is the reward
+of step $t$.
+
+\subsection{K-armed Bandit}
+The K-armed bandit is a model of one step reinforcement learning. Every time you pull one arm of the machine,
+it gives you some rewards with certain probability. The goal is to acquire as many rewards as possible.
+
+\subsubsection{Exploration and Exploitation}
+The \textbf{exploration-only} method tries to figure out the expectation reward of each arm. It divides the 
+exploration chance evenly on each arm, and use the average reward of each arm as the expectation reward. This
+method may do a good job in estimating each arm's reward, but it may miss the opportunity to get the most 
+rewards. The \textbf{exploitation-only} method, on the other hand, only pulls the arm that gives the most 
+average rewards so far. Since it dosen't care about the expectation reward of each arm, it may also miss the
+opportunity to get the most rewards. 
+
+\subsubsection{$\varepsilon$-greedy}
+The $\varepsilon$-greedy is a compromise between exploration-only and exploitation-only method. At
+each try, it performs exploration-only method with a probability $\varepsilon$ and exploitation-only method
+the other $1 - \varepsilon$.\par
+Let $Q_n(k)$ denote the average reward of arm $k$ with $n$ tries and $v_n^k$ its n-th reward, then it is 
+clearly that
+$$Q_n(k) = \frac{1}{n} ((n-1)Q_{n-1}(k) + v_n^k)$$
+This is the updating rules for the average reward.
+
+% epsilon-greedy algorithm
+\begin{algorithm}
+    \caption{$\varepsilon$-greedy}\label{epsilon_greedy_for_K_arm_bandit}
+    \begin{algorithmic}[1]
+        \Require number of arms $K$; rewarding function $R$; number of tries $T$; exploration threshold 
+        $\varepsilon$.
+        \State $r = 0$\Comment{the accumulated reward.}
+        \State $Q(i) = 0, \quad count(i) = 0 \quad \forall~i=1,\ldots,K$\Comment{Initialization.}
+        \For{$t = 1$ \algorithmicto $T$}
+            \If{$rand() < \varepsilon$}
+                \State $k = rand(\{1, \ldots, K\})$\Comment{choose with equal probability}
+            \Else
+                \State $k = \argmax_i Q(i)$
+            \EndIf
+            \State $v = R(k)$
+            \State $r \gets r + v$
+            \State $Q(k) \gets \frac{count(k) \cdot Q(k) + v}{count(k) + 1}$
+            \State $count(k) \gets count(k) + 1$
+        \EndFor
+        \Ensure the accumulated reward $r$.
+    \end{algorithmic}
+\end{algorithm}
+
+% TODO: analysis of the epsilon-greedy.
+
+\subsubsection{Softmax}
+Softmax algorithm is another way of compromising between the exploration-only and exploitation-only methods. 
+Unlike the $\varepsilon$-greedy algorithm which uses a threshold to determine how to choose an arm, softmax 
+attach each arm with a probability to be chosen base on its current average reward. The probability 
+distribution among the arms is a Boltzmann distribution, namely:
+\begin{equation}\label{K_arm_bandit_softmax}
+P(k) = \frac{e^{\frac{Q(k)}{\tau}}}{\sum_{i=1}^K e^{\frac{Q(i)}{\tau}}}\quad\forall~k = 1,\ldots,K
+\end{equation}
+where the parameter $\tau > 0$. Apparently, if $\tau$ is close to $0$, the softmax favours the arm with
+the highest average reward, which is the case of exploitation-only method; if $\tau$ is very large (close to 
+$+\infty$), the softmax degenerates to uniform distribution, which is the case of exploration-only method.
+
+% softmax algorithm for K-arm bandit.
+\begin{algorithm}
+    \caption{Softmax}\label{Softmax_for_K_arm_bandit}
+    \begin{algorithmic}[1]
+        \Require number of arms $K$; rewarding function $R$; number of tries $T$; parameter $\tau$.
+        \State $r = 0$
+        \State $Q(i) = 0, \quad count(i) = 0\quad\forall~i=1,\ldots, K$
+        \For{$t = 1$ \algorithmicto $T$}
+            \State choose $k$ according to the distribution given by equation~\eqref{K_arm_bandit_softmax}.
+            \State $v = R(k)$
+            \State $r \gets r + v$
+            \State $Q(k) \gets \frac{count(k)\cdot Q(k)}{count(k) + 1}$
+            \State $count(k) \gets count(k) + 1$
+        \EndFor
+        \Ensure the accumulated reward $r$.
+    \end{algorithmic}
+\end{algorithm}
+
+% TODO: analysis of the softmax algorithm.
+
+\newpage
+\subsection{Model-based Learning}
+In model-based learning, the quadruple $E = \langle X, A, P, R\rangle$ are known to us. That is, we know all
+the possible states, all the possible actions that may act on them, the transition function which describes
+the probability of one state changing into another under some action, the rewarding function which grades the
+change. In the following discussion, we assume that \magenta{the state space $X$ and the action space $A$ are
+finite}.
+
+\subsubsection{Policy Measurement}
+Let $V^\pi(x)$ be the expected reward gained from applying policy $\pi$ on the starting state $x$, 
+$Q^\pi(x, a)$ the expected reward gained from first applying action $a$ then policy $\pi$ on the starting
+state $x$. $V$ and $Q$ are called \textbf{state value function} and \textbf{state-action value function}
+respectively. \par
+By definition, we can write the state value function as:
+\begin{align}
+    V^\pi_T(x) &= \E_\pi\left[\frac{1}{T}\sum_{t=1}^{T}r_t | x_0 = x\right], &\text{$T$ steps}
+    \label{state_value_T}\\
+    V^\pi_\gamma(x) &= \E_\pi\left[\sum_{t=0}^{\infty} \gamma^t r_{t+1} | x_0 = x\right], &\text{$\gamma$ 
+    discount}\label{state_value_gamma}
+\end{align}
+Similarly, we can write the state-action value function as:
+\begin{align}
+    Q^\pi_T(x, a) &= \E_\pi\left[\frac{1}{T}\sum_{t=1}^T r_t | x_0 = x, a_0 = a\right], &\text{$T$ steps}
+    \label{state-action_value_T}\\
+    Q^\pi_\gamma(x, a) &= \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x, a_0 = a\right] &\text{
+    $\gamma$ discount}\label{state-action_value_gamma}
+\end{align}
+Since the next state of the system only depends on the current state, those value functions can be written in
+a recursive form. For example, the $T$ steps accumulated state value function~\eqref{state_value_T} can be 
+written as:
+\begin{align}
+    V^\pi_T(x) &= \E_\pi \left[\frac{1}{T}\sum_{t=1}^T r_t | x_0 = x\right]\nonumber\\
+               &= \E_\pi \left[\frac{1}{T} r_1 + \frac{T-1}{T}\frac{1}{T-1}\sum_{t=2}^T r_t | x_0 = x\right]
+               \nonumber\\
+               &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a\left(\frac{1}{T}
+               R_{x\rightarrow x'}^a + \frac{T-1}{T}\E_\pi\left[\frac{1}{T-1}\sum_{t=1}^{T-1}r_t | x_0=x'
+               \right]\right)\nonumber\\
+               &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a\left(\frac{1}{T}
+               R_{x\rightarrow x'}^a + \frac{T-1}{T} V^\pi_{T-1}(x')\right)
+\end{align}
+Similarly, the $\gamma$ discount accumulated state value function~\eqref{state_value_gamma} can be written as:
+\begin{align}
+    V^\pi_\gamma(x) &= \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x\right]\nonumber\\
+                    &= \E_\pi\left[r_0 + \gamma \sum_{t=1}^\infty \gamma^{t-1}r_{t+1} | x_0=x\right]\nonumber\\
+                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a + 
+                    \gamma \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x'\right]\right)\nonumber\\
+                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a +
+                    \gamma V^\pi_\gamma(x')\right)
+\end{align}
+
+% algorithm for calculating T steps accumulated state value function.
+\begin{algorithm}
+    \caption{$T$ steps accumulated state value function}
+    \begin{algorithmic}[1]
+        \Require $E = \langle X, A, P, R\rangle$; policy $\pi$; steps $T$.
+        \State $V(x) = 0\quad\forall~x\in X$
+        \For{$t=1$ \algorithmicto $T$}
+            \State $\displaystyle V'(x) = \sum_{a\in A}\pi(x,a)\sum_{x'\in X}P_{x\rightarrow x'}^a 
+            \left(\frac{1}{t} R_{x\rightarrow x'}^a + \frac{t-1}{t}V(x')\right)\quad\forall~x\in X$
+            \If{$t = T+1$}
+                \State \algorithmicbreak
+            \Else
+                \State $V \gets V'$
+            \EndIf
+        \EndFor
+        \Ensure state value function $V$.
+    \end{algorithmic}
+\end{algorithm}
+
+% algorithm for gamma discount accumulated state value function.
+\begin{algorithm}
+    \caption{$\gamma$ discount accumulated state value function}
+    \begin{algorithmic}[1]
+        \Require $E = \langle X, A, P, R\rangle$; policy $\pi$; parameter $\gamma$; threshold $\theta$.
+        \State $V(x) = 0\quad\forall~x\in X$
+        \Loop
+            \State $\displaystyle V'(x) = \sum_{a\in A}\pi(x,a)\sum_{x'\in X}P_{x\rightarrow x'}^a 
+            \left(R_{x\rightarrow x'}^a + \gamma V(x')\right)\quad\forall~x\in X$
+            \If{$\displaystyle\max_{x\in X}|V(x) - V'(x)| < \theta$}
+                \State \algorithmicbreak
+            \Else
+                \State $V \gets V'$
+            \EndIf
+        \EndLoop
+        \Ensure state value function $V$.
+    \end{algorithmic}
+\end{algorithm}
+
+% TODO: formulas for state-action value functions.
+
+% TODO: algorithms for state-action value functions.
+
+\subsubsection{Policy Improvement}
+
+\subsection{Model-free Learning}
