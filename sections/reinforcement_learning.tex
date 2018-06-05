@@ -124,6 +124,7 @@ Similarly, we can write the state-action value function as:
     Q^\pi_\gamma(x, a) &= \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x, a_0 = a\right] &\text{
     $\gamma$ discount}\label{state-action_value_gamma}
 \end{align}
+\par
 Since the next state of the system only depends on the current state, those value functions can be written in
 a recursive form. For example, the $T$ steps accumulated state value function~\eqref{state_value_T} can be 
 written as:
@@ -135,16 +136,7 @@ written as:
                R_{x\rightarrow x'}^a + \frac{T-1}{T}\E_\pi\left[\frac{1}{T-1}\sum_{t=1}^{T-1}r_t | x_0=x'
                \right]\right)\nonumber\\
                &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a\left(\frac{1}{T}
-               R_{x\rightarrow x'}^a + \frac{T-1}{T} V^\pi_{T-1}(x')\right)
-\end{align}
-Similarly, the $\gamma$ discount accumulated state value function~\eqref{state_value_gamma} can be written as:
-\begin{align}
-    V^\pi_\gamma(x) &= \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x\right]\nonumber\\
-                    &= \E_\pi\left[r_0 + \gamma \sum_{t=1}^\infty \gamma^{t-1}r_{t+1} | x_0=x\right]\nonumber\\
-                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a + 
-                    \gamma \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x'\right]\right)\nonumber\\
-                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a +
-                    \gamma V^\pi_\gamma(x')\right)
+               R_{x\rightarrow x'}^a + \frac{T-1}{T} V^\pi_{T-1}(x')\right)\label{state_value_T_expansion}
 \end{align}
 
 % algorithm for calculating T steps accumulated state value function.
@@ -166,6 +158,16 @@ Similarly, the $\gamma$ discount accumulated state value function~\eqref{state_v
     \end{algorithmic}
 \end{algorithm}
 
+Similarly, the $\gamma$ discount accumulated state value function~\eqref{state_value_gamma} can be written as:
+\begin{align}
+    V^\pi_\gamma(x) &= \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x\right]\nonumber\\
+                    &= \E_\pi\left[r_0 + \gamma \sum_{t=1}^\infty \gamma^{t-1}r_{t+1} | x_0=x\right]\nonumber\\
+                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a + 
+                    \gamma \E_\pi\left[\sum_{t=0}^\infty \gamma^t r_{t+1} | x_0 = x'\right]\right)\nonumber\\
+                    &= \sum_{a\in A}\pi(x, a)\sum_{x'\in X}P_{x\rightarrow x'}^a \left(R_{x\rightarrow x'}^a +
+                    \gamma V^\pi_\gamma(x')\right)\label{state_value_gamma_expansion}
+\end{align}
+
 % algorithm for gamma discount accumulated state value function.
 \begin{algorithm}
     \caption{$\gamma$ discount accumulated state value function}
@@ -185,10 +187,82 @@ Similarly, the $\gamma$ discount accumulated state value function~\eqref{state_v
     \end{algorithmic}
 \end{algorithm}
 
-% TODO: formulas for state-action value functions.
+% formulas for state-action value functions.
+Since the state-action value functions are just the state value functions with the given first action, we can 
+easily write the state-action value functions in terms of state value functions:
+\begin{align}
+    Q^\pi_T(x, a) &= \sum_{x' \in X} P_{x \rightarrow x'}^a\left(\frac{1}{T}R_{x \rightarrow x'}^a +
+    \frac{T-1}{T}V^\pi_{T-1}(x')\right)\label{state-action_value_T_expansion}\\
+    Q^\pi_\gamma(x, a) &= \sum_{x' \in X} P_{x \rightarrow x'}^a\left(R_{x \rightarrow x'}^a + \gamma 
+    V^\pi_\gamma(x')\right)\label{state-action_value_gamma_expansion}
+\end{align}
+Hence it is obvious that:
+\begin{equation}\label{relation_V_Q}
+V^\pi(x) = \sum_{a \in A}\pi(x, a)Q^\pi(x, a)
+\end{equation}
 
 % TODO: algorithms for state-action value functions.
 
 \subsubsection{Policy Improvement}
+Of course, the best policy is the one that maximize the state value function, i.e.
+$$\pi^* = \argmax_\pi \sum_{x \in X}V(x)$$
+Due to the recursive nature of the state value functions~\eqref{state_value_T_expansion}
+and~\eqref{state_value_gamma_expansion}, we can conclude that if there is no restriction on the policies that 
+we can choose, the optimal state value functions satisfy the following equations:
+\begin{align}
+    V^*_T(x) &= \max_{a \in A} \sum_{x' \in X}P_{x \rightarrow x'}^a\left(\frac{1}{T}R_{x \rightarrow x'}^a +
+    \frac{T-1}{T}V^*_{T-1}(x')\right)\\
+    V^*_\gamma(x) &= \max_{a \in A} \sum_{x' \in X}P_{x \rightarrow x'}^a\left(R_{x \rightarrow x'}^a + \gamma
+    V^*_\gamma(x')\right)
+\end{align}
+That is,
+\begin{equation}\label{relation_optimal_V_Q}
+    V^*(x) = \max_{a \in A}Q^*(x, a)
+\end{equation}
+This in turn gives us the expression of $Q^*(x, a)$:
+\begin{align}
+    Q^*_T(x, a) &= \sum_{x' \in X} P_{x \rightarrow x'}^a\left(\frac{1}{T}R_{x \rightarrow x'}^a +
+    \frac{T-1}{T}\max_{a' \in A}Q^*_{T-1}(x',a')\right)\\
+    Q^*_\gamma(x, a) &= \sum_{x' \in X} P_{x \rightarrow x'}^a\left(R_{x \rightarrow x'}^a + \gamma 
+    \max_{a' \in A}Q^*_\gamma(x', a')\right)
+\end{align}
+
+The relation between optimal state value function and optimal state-action value 
+function~\eqref{relation_optimal_V_Q} shed light on how to improve the current policy: \magenta{always choose 
+the current best action for the state}. That is, let 
+\begin{equation}
+\pi'(x) = \argmax_{a \in A}Q^\pi(x, a)\quad\forall~x \in X
+\end{equation}
+Then by relation~\eqref{relation_V_Q}, we have
+$$Q^\pi(x, \pi'(x)) \geq V^\pi(x)$$
+Since $\pi'(x)$ is the action that should be taken on the state $x$, by relation~\eqref{relation_V_Q} again, 
+we have
+\begin{align*}
+    V^{\pi'}(x) &= \sum_{a \in A}\pi'(x, a) Q^{\pi'}(x, a)\\
+              &= Q^{\pi'}(x, \pi'(x))
+\end{align*}
+This gives us the following estimate:
+\begin{align*}
+    V^\pi(x) - V^{\pi'}(x) &\leq Q^\pi(x, \pi'(x)) - Q^{\pi'}(x, \pi'(x))\\
+                           &\leq \sum_{x' \in X}P_{x \rightarrow x'}^{\pi'(x)}\cdot\gamma\left(V^\pi(x') - 
+                           V^{\pi'}(x')\right)\\
+                           &\leq \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)\sum_{x' \in X}
+                           P_{x \rightarrow x'}^{\pi'(x)}\\
+                           &\leq \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)
+\end{align*}
+Here, we use the fact that $P \geq 0$ and $\sum_{x' \in X}P_{x \rightarrow x'}^{\pi'(x)} = 1$. Since
+$\gamma \in (0, 1)$, we conclude that
+$$\max_{x \in X}\left(V^\pi(x) - V^{\pi'}(x)\right) \leq 0$$
+That is 
+$$V^\pi(x) \leq V^{\pi'}(x)\quad\forall~x \in X$$
+This justifies the choice of $\pi'(x)$.
+\begin{re}
+    Note that the above discussion is also valid in the case of $T$-steps accumulated state value function
+    with almost the same argument.
+\end{re}
+
+% TODO: policy iteration
+
+% TODO: value iteration
 
 \subsection{Model-free Learning}
