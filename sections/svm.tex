@@ -1,7 +1,7 @@
 \section{Support Vector Machine}
 Let \dataset\ be the training set where $y_i \in\{-1, +1\}$. The SVM is an algorithm that tries to find a 
-hyperplane $y = \T{\V{w}}\V{x} + b$ which separate the positive examples from the negative ones. The 
-corresponding predictor is $f(\V{x}) = \sign(\T{\V{w}}\V{x} + b)$.
+hyperplane $y = \langle\V{w}, \V{x}\rangle + b$ which separate the positive examples from the negative ones. The 
+corresponding predictor is $f(\V{x}) = \sign(\langle\V{w}, \V{x}\rangle + b)$.
 
 \subsection{Hard SVM}
 First we introduce the concept of the margin of a hyperplane:
@@ -10,7 +10,7 @@ First we introduce the concept of the margin of a hyperplane:
     The margin of a hyperplane w.r.t.\ a training set is the minimal Euclidean distance between the point in the 
     training set and the hyperplane, that is:
     \begin{equation*}
-    \min_i \frac{|\T{\V{w}}\V{x}_i + b|}{||\V{w}||}
+    \min_i \frac{|\langle\V{w}, \V{x}_i\rangle + b|}{||\V{w}||}
     \end{equation*}
 \end{df}
 
@@ -18,7 +18,7 @@ First we introduce the concept of the margin of a hyperplane:
 The core idea of (hard) SVM is to find a hyperplane which separates the training set
 \textit{with the largest margin}. That is, we hope to solve the following:
 \begin{equation}\label{SVM_original}
-    \argmax_{\V{w}, b}\min_i \frac{|\T{\V{w}}\V{x}_i + b|}{||\V{w}||}
+    \argmax_{\V{w}, b}\min_i \frac{|\langle\V{w}, \V{x}_i\rangle + b|}{||\V{w}||}
 \end{equation}
 Using the assumption that the hyperplane should correctly separates the training set, let
 $$\gamma_i = \frac{y_i(\langle\V{w}, \V{x}_i\rangle + b)}{||\V{w}||}$$
