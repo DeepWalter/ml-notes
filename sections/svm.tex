@@ -77,7 +77,7 @@ penalization matters most and you cannot violate any single restriction.\par
 If we introduce the slack variabels $\xi_i = \max(0, 1 - y_i(\T{\V{w}}\V{x}_i +b))$, then
 the problem~\eqref{soft_SVM_original} becomes:
 \begin{equation}\label{soft_SVM}
-    \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\xi_i\quad\st\left\{
+    \argmin_{\V{w}, b, \V{\xi}} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\xi_i\quad\st\left\{
     \begin{aligned}
     & y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1 - \xi_i\\
     & \xi_i \geq 0 
@@ -88,5 +88,91 @@ this is what we called the soft SVM\@.
 
 \subsection{Duality}
 
+% duality of hard-SVM
+Let $h_i(\V{w}, b) = 1 - y_i(\langle \V{w}, \V{x}_i\rangle + b)$, then the hard SVM~\eqref{hard_SVM} becomes
+$$\argmin_{\V{w},b} \frac{1}{2}||\V{w}||^2\quad\st h_i(\V{w}, b) \leq 0\quad\forall~i$$
+Its Lagrangian is
+\begin{equation}\label{Lagrangian_hard_SVM}
+    L(\V{w}, b; \V{\alpha}) = \frac{1}{2}||\V{w}||^2 + \sum_i \alpha_i h_i(\V{w}, b)
+\end{equation}
+Let $\displaystyle\theta_D(\V{\alpha}) = \min_{\V{w}, b}L(\V{w}, b; \V{\alpha})$, then 
+$\nabla_{\V{w}, b} L(\V{w}, b; \V{\alpha}) = 0$ gives
+\begin{subequations}
+    \begin{align}
+    &\V{w} = \sum_i y_i \V{x}_i\label{sub:w}\\
+    &\sum_i y_i \alpha_i = 0\label{sub:b}
+    \end{align}
+\end{subequations}
+Substitute equation~\eqref{sub:w} into the Lagrangian~\eqref{Lagrangian_hard_SVM}, we have
+\begin{equation}
+    \theta_D(\V{\alpha}) = \sum_i \alpha_i - \frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \V{x}_i, 
+    \V{x}_j\rangle
+\end{equation}
+Hence the dual problem $\displaystyle \max_{\V{\alpha}: \alpha_i \geq 0}\theta_D(\V{\alpha})$ becomes
+\begin{equation*}
+    \max_{\V{\alpha}}\sum_i \alpha_i - \frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \V{x}_i, \V{x}_j
+    \rangle\quad\st \left\{
+    \begin{aligned}
+    &\sum_i y_i \alpha_i = 0\\
+    &\alpha_i \geq 0\quad\forall~i
+    \end{aligned}\right.
+\end{equation*}
+or equivalently
+\begin{equation}\label{dual_hard_SVM}
+    \min_{\V{\alpha}}\frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \V{x}_i, \V{x}_j\rangle -
+    \sum_i \alpha_i \quad\st \left\{
+    \begin{aligned}
+        &\sum_i y_i \alpha_i = 0\\
+        &\alpha_i \geq 0\quad\forall~i
+        \end{aligned}\right.
+\end{equation}
+Note that $\frac{1}{2}||\V{w}||^2$ is convex and $h_i$ are affine linear. And the linear separable assumption
+guarantees that there is $(\V{w}, b)$ \st $h_i(\V{w}, b) \leq 0\;\forall~i$. Hence there is a solution
+$(\V{w}^*, b^*)$ for the hard SVM~\eqref{hard_SVM}, and a solution $\V{\alpha}^*$ for the dual
+problem~\eqref{dual_hard_SVM}. Moreover, they satisfy the KKT condition:
+\begin{equation}\label{KKT_hard_SVM}
+    \begin{cases}
+        &\V{w}^* - \sum_i \alpha_i^* y_i \V{x}_i = 0\\
+        &\sum_i y_i \alpha_i^* = 0\\
+        & \alpha_i^* \geq 0\\
+        & h_i(\V{w}^*, b^*) \leq 0\\
+        & \alpha_i^* h_i(\V{w}^*, b^*) = 0
+    \end{cases}
+\end{equation}
+Note that not all $\alpha_i^*$ could be $0$ (otherwise $\V{w}^* = 0$, which is not a solution of the hard SVM).
+Let $\alpha^*_{i_0} > 0$. Then $\alpha_{i_0}^* h_{i_0}(\V{w}^*, b^*) = 0$ implies
+\begin{equation*}
+    b^* = y_{i_0} - \sum_i \alpha_i^* y_i \langle \V{x}_i, \V{x}_{i_0}\rangle
+\end{equation*}
+In summary, we have
+\begin{equation}
+    \begin{cases}
+        &\V{w}^* = \sum_i \alpha_i^* y_i \V{x}_i\\
+        &b^* = y_{i_0} - \sum_i \alpha_i^* y_i \langle \V{x}_i, \V{x}_{i_0}\rangle
+    \end{cases}
+\end{equation}
+\begin{re}
+    For those indices $i$ \st $\alpha^*_i > 0$, the corresponding $\V{x}_i$ are the supporting vectors.
+\end{re}
+% duality of soft-SVM
+% TODO: supply more details.
+\par
+Following a similar process, we can get the dual problem of the soft SVM~\eqref{soft_SVM}:
+\begin{equation}
+    \min_{\V{\alpha}} \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j\langle \V{x}_i, \V{x}_j\rangle -
+    \sum_i \alpha_i\quad\st \left\{
+    \begin{aligned}
+        &\sum_i \alpha_i y_i = 0\\
+        &0 \leq \alpha_i \leq C \quad\forall~i
+    \end{aligned}\right.
+\end{equation}
+Let $\V{\alpha}^*$ be the solution to the above dual problem. If there is some $\alpha_{i_0}$ such that 
+$0 < \alpha_{i_0}^* < C$, then the solution of the soft SVM~\eqref{soft_SVM} can be written as:
+\begin{equation}
+    \begin{cases}
+        &\V{w}^* = \sum_i y_i \alpha^*_i \V{x}_i\\
+        &b^* = y_{i_0} - \sum_i y_i \alpha_i \langle \V{x}_i, \V{x}_{i_0}\rangle
+    \end{cases}
+\end{equation}
 
 \subsection{Kernel method}
