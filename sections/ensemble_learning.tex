@@ -28,7 +28,7 @@
 \begin{algorithm}
     \caption{Bagging}\label{Bagging}
     \begin{algorithmic}[1]
-        \Require training set $D = \{(\V{x}_1, y_1), \ldots, (\V{x}_m, y_m)\}$; base learner $\mathcal{L}$;
+        \Require training set $D = \{(\V{x}_1, y_1), \dotsc, (\V{x}_m, y_m)\}$; base learner $\mathcal{L}$;
         training round $T$.
         \For{$t = 1$ \algorithmicto $T$}
             \State $h_t = \mathcal{L}(D, \mathcal{D}_{bs})$\Comment{bs stands for bootstrap sampling.} 

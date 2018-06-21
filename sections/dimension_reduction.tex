@@ -1,2 +1,59 @@
 \section{Dimension Reduction}
 
+\subsection{Low-dimensional embedding}
+Let the feature space $\mathcal{X} = \mathbb{R}^d$. Our goal is to find an embedding of all samples into a
+low dimension space $\mathbb{R}^{d'}$, here $d' \leq d$. That is, we want to find a map $e: \mathbb{R}^d
+\longrightarrow \mathbb{R}^{d'}$ \st for any samples $\V{x}_i, \V{x}_j$, we have 
+$$\dist(e(\V{x}_i), e(\V{x}_j)) = \dist(\V{x}_i, \V{x}_j)$$
+Thus ${\left\{e(\V{x}_i)\right\}}_i$ is a low-dimensional embedding of the original samples. 
+
+Let $\V{D} = {\left(\dist(\V{x}_i, \V{x}_j)\right)}_{m \times m}$ be the distance matrix of the samples 
+${\left\{\V{x}_i\right\}}_i$, we want to find the embedding matrix $\V{Z} \in \mathbb{R}^{m \times d'}$, \st 
+$||\V{z}_i - \V{z}_j|| = \V{D}_{ij}$, where $\V{Z} = (\V{z}_1; \dotsc; \V{z}_m)$ and 
+$\V{D}_{ij} = \dist(\V{x}_i, \V{x}_j)$. Hence we have 
+$$ \V{D}_{ij}^2 = ||\V{z}_i||^2 + ||\V{z}_j||^2 - 2 \langle\V{z}_i, \V{z}_j\rangle$$
+Let $\V{B} = {\left(b_{ij}\right)}_{m \times m}= \V{Z}\T{\V{Z}}$ where $b_{ij} = \langle\V{z}_i, \V{z}_j\rangle$, 
+we have
+\begin{equation}\label{DR_Dij}
+    \V{D}_{ij}^2 = b_{ii} + b_{jj} - 2 b_{ij}
+\end{equation}
+Let $\V{c} = \frac{1}{m}\sum_i \V{z}_i$, then ${\left\{\V{z}_i - \V{c}\right\}}_i$ is an embedding with the
+property that $\sum_i(\V{z}_i - \V{c}) = 0$. Hence we can require that $\sum_i \V{z}_i = 0$ in the above
+discussion. Then from equation~\eqref{DR_Dij}, we know that:
+\begin{align}
+    \sum_i \V{D}_{ij}^2 &= \tr(\V{B}) + m b_{jj}\\
+    \sum_j \V{D}_{ij}^2 &= \tr(\V{B}) + m b_{ii}\\
+    \sum_{i,j} \V{D}_{ij}^2 &= 2m \tr(\V{B})
+\end{align}
+From the above equations, we have
+\begin{equation}\label{DR_bij}
+    b_{ij} = -\frac{1}{2}\left(\V{D}_{ij}^2 - \frac{1}{m}\sum_i \V{D}_{ij}^2 - \frac{1}{m} \sum_j \V{D}_{ij}^2
+    + \frac{1}{m^2}\sum_{i,j}\V{D}_{ij}^2\right)
+\end{equation}
+That is, $\V{B}$ is totally determined by $\V{D}$. Let $\V{B} = \V{V}\V{\Lambda}\T{\V{V}}$ be the eigenvalue
+decomposition of $\V{B}$. Since $\V{B}$ is semi-positive, $\V{\Lambda}$ is a diagonal matrix with non-negative
+diagonals. Let $\V{\Lambda}_*$ be the diagonal matrix obtained by removing the zero eigenvalues from 
+$\V{\Lambda}$ and $\V{V}_*$ the matrix by removing the corresponding columns of $\V{V}$. Then it's easy to 
+conclude that 
+$$\V{Z} = \V{V}_*\V{\Lambda}_*^{\nicefrac{1}{2}}$$
+is what we want. Hence the dimension $d'$ is totally determined by the distance matrix $\V{D}$. 
+
+In practise, we often fix some $d' \ll d$ at first, then obtain $\V{\Lambda}_*$ by keeping the $d'$ largest 
+eigenvalues and remove the rest, and $\V{V}_*$ the corresponding matrix. By this way, we may lose some 
+precision in keeping the pairwise distance, but we can greatly reduce the dimension.
+
+\begin{algorithm}
+    \caption{Multiple Dimensional Scaling}
+    \begin{algorithmic}[1]
+        \Require the distance matrix $\V{D}_{m \times m}$; dimension $d'$.
+        \State Compute the matrix $\V{B}$ according to equation~\eqref{DR_bij}.
+        \State Eigenvalue decomposition: $\V{B} = \V{V} \V{\Lambda}\T{\V{V}}$.
+        \State Let $\V{\Lambda}_*$ be the diagonal matrix with the $d'$ largest eigenvalues and $\V{V}_*$ the
+        matrix with the corresponding eigenvectors.
+        \Ensure Low-dimensional embedding: $\V{Z} = {\left(\V{V}_* \V{\Lambda}_*^{\nicefrac{1}{2}}\right)}_{m 
+        \times d'}$
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Linear Dimension Reduction}
+The simplest way to reduce dimension is by dropping some components, that is, via projection.
