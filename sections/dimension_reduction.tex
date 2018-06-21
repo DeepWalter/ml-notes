@@ -56,4 +56,11 @@ precision in keeping the pairwise distance, but we can greatly reduce the dimens
 \end{algorithm}
 
 \subsection{Linear Dimension Reduction}
-The simplest way to reduce dimension is by dropping some components, that is, via projection.
+The simplest way to reduce dimension is by dropping some coordinates, that is, via projection. This keeps the
+linear structure of the samples. A more generalized way is via linear transformation: $\V{X} \V{W} = \V{Z}$,
+where $\V{X} = {\left(\V{x}_1; \dotsc; \V{x}_m\right)}_{m \times d}$ is the feature matrix of the samples, $\V{W} \in 
+\mathbb{R}^{d \times d'}$ the transformation matrix, and $\V{Z}_{m \times d'}$ the representation matrix
+in low dimensional space. If we write $\V{Z} = {\left(\V{z}_1; \dotsc; \V{z}_{m}\right)}$, then $\V{z}_i =
+\V{x}_i \V{W}$.
+
+
