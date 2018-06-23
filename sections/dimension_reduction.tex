@@ -57,10 +57,64 @@ precision in keeping the pairwise distance, but we can greatly reduce the dimens
 
 \subsection{Linear Dimension Reduction}
 The simplest way to reduce dimension is by dropping some coordinates, that is, via projection. This keeps the
-linear structure of the samples. A more generalized way is via linear transformation: $\V{X} \V{W} = \V{Z}$,
-where $\V{X} = {\left(\V{x}_1; \dotsc; \V{x}_m\right)}_{m \times d}$ is the feature matrix of the samples, $\V{W} \in 
-\mathbb{R}^{d \times d'}$ the transformation matrix, and $\V{Z}_{m \times d'}$ the representation matrix
-in low dimensional space. If we write $\V{Z} = {\left(\V{z}_1; \dotsc; \V{z}_{m}\right)}$, then $\V{z}_i =
-\V{x}_i \V{W}$.
+linear structure of the samples. A more generalized way is via linear transformation: $A: \mathbb{R}^d 
+\longrightarrow \mathbb{R}^{d'}$. In matrix form, we want to find a transformation matrix 
+$\V{W} \in \mathbb{R}^{d \times d'}$ \st for any row vector $\V{x} \in \mathbb{R}^d$, we have
+$A(\V{x}) = \V{x} \V{W}$. If we write $\V{W} = \left(\V{w}_1, \dotsc, \V{w}_{d'}\right)$, then we have
+$A(\V{x}) = \left(\langle \V{x}, \V{w}_1\rangle, \dotsc, \langle \V{x}, \V{w}_{d'}\rangle\right)$. If
+${\left\{\V{w}_i\right\}}_{i=1}^{d'}$ is orthonormal, then $A(\V{x})$ is the projection of $\V{x}$ into the
+subspace spanned by ${\left\{\V{w}_i\right\}}_{i=1}^{d'}$. It's easy to see that if 
+$\V{X} = {\left(\V{x}_1; \dotsc; \V{x}_m\right)}_{m \times d}$ is the feature matrix of the samples, then 
+$\V{Z} = \V{X} \V{W} \in \mathbb{R}^{m \times d'}$ is the representation matrix desired.
 
+\subsubsection{Principle Component Analysis}
+The naive projection method may fail because of the huge possibility of dropping those components that really
+matters while keeping those that have little information about the dataset. To overcome this, we need to
+determine what is it mean for a component to be principle. A natrual measurement is the variance. Namely, 
+the component with largest variance and lowest covariance w.r.t.\ others counts most. We only drop out those 
+with small variances. 
+\par
+Let $\V{X} = {\left(\V{x}_1; \dotsc; \V{x}_m\right)}$ be the feature matrix as above. Without loss of 
+generality, we may assume that $\sum_i \V{x}_i = 0$. Then $\T{\V{X}}\V{X} \in \mathbb{R}^{d \times d}$ is the
+covariant matrix of $\V{X}$. If $\T{\V{X}}\V{X}$ is diagonal, then the largest eigenvalue corresponds to the 
+principle component. Hence we may keep the components corresponding to the $d'$ largest eigenvalues. If 
+$\T{\V{X}}\V{X}$ is not diagonal, let $\T{\V{X}}\V{X} = \V{V}\V{\Lambda}\T{\V{V}}$ be its eigenvalue 
+decomposition. Then we have $\T{\V{V}}\T{\V{X}}\V{X}\V{V} = \V{\Lambda}$. The matrix 
+${\left(\V{V}_*\right)}_{d \times d'}$ consists of the eigenvectors corresponding to the $d'$ largest 
+eigenvalues of $\V{\Lambda}$ is the desired transformation matrix. And $\V{X}\V{V}_*$ is the representation of
+the original samples in low dimensional space $\mathbb{R}^{d'}$.
+
+% algorithm of PCA
+\begin{algorithm}
+    \caption{Principle Component Analysis}\label{algorithm:pca}
+    \begin{algorithmic}[1]
+        \Require dataset $D = \left\{\V{x}_1, \dotsc, \V{x}_m\right\}$; dimension $d'$.
+        \State Compute the center of samples: $\V{c} = \frac{1}{m}\sum_i \V{x}_i$
+        \State $\V{x}_i \gets \V{x}_i -\V{c}$
+        \State Compute the covariant matrix $\T{\V{X}}\V{X}$\Comment{$\V{X}=(\V{x}_1; \dotsc;\V{x}_m)$}
+        \State Eigenvalue decomposition: $\T{\V{X}}\V{X} = \V{V}\V{\Lambda}\T{\V{V}}$
+        \State Fetch the (column) eigenvectors $\V{w}_1, \dotsc, \V{w}_{d'}$ from $\V{V}$ corresponding to the
+        $d'$ largest eigenvalues of $\V{\Lambda}$.
+        \Ensure transformation matrix $\V{W} = \left(\V{w}_1, \dotsc, \V{w}_{d'}\right)$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{re}
+    The PCA method actually consists of two steps:
+    \begin{compactenum}
+        \item Centralization: $\V{x} \gets \V{x} -\V{c}\quad\forall~\V{x}$ where the center $\V{c}$ is computed
+        from the the given data set.
+        \item Linear transformation: $\V{z} = \V{x} \V{W}$ where $\V{z}, \V{x}$ are both row vectors and
+        $\V{z}$ is the desired representation in low dimensional space.
+    \end{compactenum}
+    Of course, those two steps should also apply to unseen data.
+\end{re}
+
+\begin{re}
+    In the above PCA algorithm~\ref{algorithm:pca}, we can use the singular value decomposition instead of the 
+    eigenvalue decomposition. Let $\V{X} = \V{U}\V{\Sigma}\T{\V{V}}$ be the singular value decomposition of 
+    $\V{X}$, then we have $\T{\V{X}}\V{X} = \V{V} \T{\V{\Sigma}}\V{\Sigma} \T{\V{V}}$. Notice that
+    $\T{\V{\Sigma}}\V{\Sigma}$ is a diagonal. We can proceed as in the above algorithm to get the
+    transformation matrix.
+\end{re}
 
