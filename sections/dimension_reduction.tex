@@ -76,7 +76,7 @@ with small variances.
 \par
 Let $\V{X} = {\left(\V{x}_1; \dotsc; \V{x}_m\right)}$ be the feature matrix as above. Without loss of 
 generality, we may assume that $\sum_i \V{x}_i = 0$. Then $\T{\V{X}}\V{X} \in \mathbb{R}^{d \times d}$ is the
-covariant matrix of $\V{X}$. If $\T{\V{X}}\V{X}$ is diagonal, then the largest eigenvalue corresponds to the 
+covariance matrix of $\V{X}$. If $\T{\V{X}}\V{X}$ is diagonal, then the largest eigenvalue corresponds to the 
 principle component. Hence we may keep the components corresponding to the $d'$ largest eigenvalues. If 
 $\T{\V{X}}\V{X}$ is not diagonal, let $\T{\V{X}}\V{X} = \V{V}\V{\Lambda}\T{\V{V}}$ be its eigenvalue 
 decomposition. Then we have $\T{\V{V}}\T{\V{X}}\V{X}\V{V} = \V{\Lambda}$. The matrix 
@@ -91,7 +91,7 @@ the original samples in low dimensional space $\mathbb{R}^{d'}$.
         \Require dataset $D = \left\{\V{x}_1, \dotsc, \V{x}_m\right\}$; dimension $d'$.
         \State Compute the center of samples: $\V{c} = \frac{1}{m}\sum_i \V{x}_i$
         \State $\V{x}_i \gets \V{x}_i -\V{c}$
-        \State Compute the covariant matrix $\T{\V{X}}\V{X}$\Comment{$\V{X}=(\V{x}_1; \dotsc;\V{x}_m)$}
+        \State Compute the covariance matrix $\T{\V{X}}\V{X}$\Comment{$\V{X}=(\V{x}_1; \dotsc;\V{x}_m)$}
         \State Eigenvalue decomposition: $\T{\V{X}}\V{X} = \V{V}\V{\Lambda}\T{\V{V}}$
         \State Fetch the (column) eigenvectors $\V{w}_1, \dotsc, \V{w}_{d'}$ from $\V{V}$ corresponding to the
         $d'$ largest eigenvalues of $\V{\Lambda}$.
@@ -118,3 +118,4 @@ the original samples in low dimensional space $\mathbb{R}^{d'}$.
     transformation matrix.
 \end{re}
 
+There are other approaches to derive the PCA algorithm.
