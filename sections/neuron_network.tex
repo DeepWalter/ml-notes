@@ -89,23 +89,24 @@ For a collection of examples, the cost function is the average cost on those exa
 \end{equation}
 
 \subsection{Backpropagation}
-Let $\delta^l_j$ be the error in the $j$-th neuron in the $l$-th layer, i.e.
-\begin{equation}
+First let's consider the case with a single input example. Let $\delta^l_j$ be the error in the $j$-th neuron
+in the $l$-th layer, i.e.
+\begin{equation}\label{delta_l_j}
     \delta^l_j = \pfrac{C}{z^l_j}
 \end{equation}
 
 For the output layer $L$, by definition we have:
 \begin{align*}
-    \delta^l_j &= \pfrac{C}{z^l_j}\\
+    \delta^L_j &= \pfrac{C}{z^L_j}\\
                &= \sum_k \pfrac{C}{a^L_k} \pfrac{a^L_k}{z^L_j}\\
                &= \pfrac{C}{a^L_j} \pfrac{\sigma^L_j(z^L_j)}{z^L_j}\\
-               &= \pfrac{C}{a^L_j} (\sigma^L_j)'(z^L_j)
+               &= \pfrac{C}{a^L_j}\cdot (\sigma^L_j)'(z^L_j)
 \end{align*}
 That is,
 \begin{equation}
     \delta^L = \nabla_{a^L}C \odot (\sigma^L)'(z^L)
 \end{equation}
-When $C$ is the square loss~\eqref{nn_square_loss}, $\nabla_{a^L}C = a^L - y$.
+For example, when $C$ is the square loss~\eqref{nn_square_loss}, $\nabla_{a^L}C = a^L - y$.
 \par
 We can write $\delta^l$ in terms of $\delta^{l+1}$ as following:
 \begin{align*}
@@ -162,7 +163,7 @@ we can write the pseudocode of backpropagation algorithm easily as the following
     \end{algorithmic}
 \end{algorithm}
 
-This is the algorithm for a single example, we are now ready to do the vectorization. Let $\V{x}^i$ and $y^i$
+We are now ready to do the vectorization. Let $\V{x}^i$ and $y^i$
 be the $i$-th example and its output respectively, let
 \begin{align*}
     X &= {(\V{x}^1; \ldots; \V{x}^m)}_{m \times n}\\
@@ -188,3 +189,10 @@ $$\pfrac{C}{b^l_j} = \operatorname{reduce\_mean}(\operatorname{col}_j(\Delta^l))
 and
 $$\pfrac{C}{w^l_{ij}} = \operatorname{reduce\_mean}(\operatorname{col}_i(A^{l-1}) \odot \operatorname{col}_j
 (\Delta^l))$$
+
+\subsection{Cost Functions}
+
+\subsection{Regularizations}
+\subsubsection{$L^1$ and $L^2$ Regularizations}
+
+\subsubsection{Dropout}
