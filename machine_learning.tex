@@ -7,6 +7,7 @@
 \usepackage{tikz}
 \usepackage{paralist}
 \usepackage{nicefrac}
+\usepackage{minted}
 % =========== 
 
 
@@ -68,6 +69,10 @@
 
 % =====================================================
 \numberwithin{equation}{section}
+
+% =============================Python Code Customization========================
+% Package: minted
+\setminted[python]{frame=single, linenos=true, numbersep=3pt, autogobble=true, mathescape=true}
 
 % =============================== Document =====================================
 \begin{document}
