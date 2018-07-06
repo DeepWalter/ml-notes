@@ -55,12 +55,12 @@
     \item[$a^l_j$] activation of the $j$-th neuron in layer $l$.
     \item[$z^l_j$] raw output of the $j$-th neuron in layer $l$.
     \item[$\sigma^l_j$] activation function of the $j$-th neuron in layer $l$.
-    \item[$w^l$] weight matrix connecting layer $l-1$ to layer $l$, i.e. $(w^l_{ij})$, of dimension 
+    \item[$\V{W}^l$] weight matrix connecting layer $l-1$ to layer $l$, i.e. $(w^l_{ij})$, of dimension 
     $(n_{l-1},\ n_l)$.
-    \item[$b^l$] bias vector of layer $l$, i.e. $(b^l_j)$, of dimension $(1, n_l)$.
-    \item[$z^l$] raw output vector of layer $l$, of dimension $(1, n_l)$.
-    \item[$a^l$] activation vector of layer $l$, of dimension $(1, n_l)$.
-    \item[$\sigma^l$] activation function vector of layer $l$, of dimension $(1, n_l)$.
+    \item[$\V{b}^l$] bias vector of layer $l$, i.e. $(b^l_j)$, of dimension $(1, n_l)$.
+    \item[$\V{z}^l$] raw output vector of layer $l$, of dimension $(1, n_l)$.
+    \item[$\V{a}^l$] activation vector of layer $l$, of dimension $(1, n_l)$.
+    \item[$\V{\sigma}^l$] vector of activation functions of layer $l$, of dimension $(1, n_l)$.
 \end{description}
 
 Some basic equations:
@@ -73,19 +73,19 @@ Some basic equations:
 The corresponding matrix forms are:
 
 \begin{align}
-    z^0 &= a^0 = \V{x} = (x_1, x_2, \ldots, x_{n})\\
-    z^l &= a^{l-1} w^l + b^l\\
-    a^l &= \sigma^l(z^l)
+    \V{z}^0 &= \V{a}^0 = \V{x} = (x_1, x_2, \ldots, x_{n})\\
+    \V{z}^l &= \V{a}^{l-1} \V{W}^l + \V{b}^l\\
+    \V{a}^l &= \V{\sigma}^l(\V{z}^l)
 \end{align}
 
 For a single input example \V{x}, the cost function $C$ should only directly depend on the output layer $L$,
 for example $C$ is the square loss function:
 \begin{equation}\label{nn_square_loss}
-    C = \frac{1}{2} ||a^L - y||^2_2
+    C = \frac{1}{2} ||\V{a}^L - \V{y}||^2_2
 \end{equation}
 For a collection of examples, the cost function is the average cost on those examples:
 \begin{equation}
-    C = \frac{1}{m} \sum_{i=1}^m C(\V{x}_i)
+    C = \frac{1}{m} \sum_{i=1}^m C(\V{x}^i)
 \end{equation}
 
 \subsection{Backpropagation}
@@ -102,23 +102,23 @@ For the output layer $L$, by definition we have:
                &= \pfrac{C}{a^L_j} \pfrac{\sigma^L_j(z^L_j)}{z^L_j}\\
                &= \pfrac{C}{a^L_j}\cdot (\sigma^L_j)'(z^L_j)
 \end{align*}
-That is,
+Let $\V{\delta}^l = {(\delta^l_j)}_{1 \times n_l}$, then the above equation can be written as:
 \begin{equation}
-    \delta^L = \nabla_{a^L}C \odot (\sigma^L)'(z^L)
+    \V{\delta}^L = \nabla_{\V{a}^L}C \odot (\V{\sigma}^L)'(\V{z}^L)
 \end{equation}
-For example, when $C$ is the square loss~\eqref{nn_square_loss}, $\nabla_{a^L}C = a^L - y$.
+For example, when $C$ is the square loss~\eqref{nn_square_loss}, $\nabla_{\V{a}^L}C = \V{a}^L - \V{y}$.
 \par
-We can write $\delta^l$ in terms of $\delta^{l+1}$ as following:
+We can write $\V{\delta}^l$ in terms of $\V{\delta}^{l+1}$ as following:
 \begin{align*}
     \delta^l_j &= \pfrac{C}{z^l_j}\\
                &= \sum_k \pfrac{C}{z^{l+1}_k} \pfrac{z^{l+1}_k}{z^l_j}\\
                &= \sum_k \delta^{l+1}_k \sum_r \pfrac{a^l_r}{z^l_j} w^{l+1}_{rk}\\
                &= \sum_k \delta^{l+1}_k (\sigma^l_j)'(z^l_j) w^{l+1}_{jk}\\
-               &= {\left(\delta^{l+1} \T{(w^{l+1})}\right)}_{j} (\sigma^l_j)'(z^l_j)
+               &= {\left(\V{\delta}^{l+1} \T{(\V{W}^{l+1})}\right)}_{j} (\sigma^l_j)'(z^l_j)
 \end{align*}
 Its corresponding matrix form is:
 \begin{equation}
-    \delta^l = \left(\delta^{l+1} \T{(w^{l+1})}\right) \odot (\sigma^l)'(z^l)
+    \V{\delta}^l = \left(\V{\delta}^{l+1} \T{(\V{W}^{l+1})}\right) \odot (\V{\sigma}^l)'(\V{z}^l)
 \end{equation}
 
 Now, let's compute \pfrac{C}{b^l_j}:
@@ -129,7 +129,7 @@ Now, let's compute \pfrac{C}{b^l_j}:
 \end{align*}
 In shorthand, it can be rewritten as:
 \begin{equation}
-    \pfrac{C}{b} = \delta
+    \pfrac{C}{\V{b}} = \V{\delta}
 \end{equation}
 
 Similarly, we can compute \pfrac{C}{w^l_{ij}}:
@@ -141,7 +141,7 @@ Similarly, we can compute \pfrac{C}{w^l_{ij}}:
 \end{align*}
 In shorthand, it can be rewritten as:
 \begin{equation}
-    \pfrac{C}{w} = a_{\text{in}}\delta_{\text{out}}
+    \pfrac{C}{\V{W}} = \V{a}_{\text{in}}\V{\delta}_{\text{out}}
 \end{equation}
 
 For simplicity, let's assume that all the activation functions are the same, i.e. $\sigma^l_i = \sigma$, then 
@@ -152,43 +152,43 @@ we can write the pseudocode of backpropagation algorithm easily as the following
     \begin{algorithmic}[1]
         \Require $\V{x} = (x_1, x_2, \ldots, x_n)$
         \For{$l = 1$ \algorithmicto $L$}
-            \State Compute $z^l = a^{l-1} w^l + b^l$ and $a^l = \sigma(z^l)$.
+            \State Compute $\V{z}^l = \V{a}^{l-1} \V{W}^l + \V{b}^l$ and $\V{a}^l = \sigma(\V{z}^l)$.
         \EndFor
-        \State Compute $\delta^l = \nabla_{a^L}C \odot \sigma'(z^L)$\Comment{$\nabla_{a^L}C = a^L - y$ if $C$ 
-        is square loss.}
+        \State Compute $\V{\delta}^l = \nabla_{\V{a}^L}C \odot \V{\sigma}'(\V{z}^L)$
+        \Comment{$\nabla_{\V{a}^L}C = \V{a}^L - \V{y}$ if $C$ is square loss.}
         \For{$l=L-1$ \algorithmicto $1$}
-            \State Compute $\delta^l = \left(\delta^{l+1} \T{(w^{l+1})}\right) \odot \sigma'(z^l)$
+            \State Compute $\V{\delta}^l = \left(\V{\delta}^{l+1} \T{(\V{W}^{l+1})}\right) \odot \sigma'(\V{z}^l)$
         \EndFor
         \Ensure $\pfrac{C}{w^l_{ij}} = a^{l-1}_i \delta^l_j$ and $\pfrac{C}{b^l_j} = \delta^l_j$.
     \end{algorithmic}
 \end{algorithm}
 
-We are now ready to do the vectorization. Let $\V{x}^i$ and $y^i$
+We are now ready to do the vectorization. Let $\V{x}^i$ and $\V{y}^i$
 be the $i$-th example and its output respectively, let
 \begin{align*}
-    X &= {(\V{x}^1; \ldots; \V{x}^m)}_{m \times n}\\
-    Y &= {(y^1; \ldots; y^m)}_{m \times n_L}
+    \V{X} &= {(\V{x}^1; \ldots; \V{x}^m)}_{m \times n}\\
+    \V{Y} &= {(\V{y}^1; \ldots; \V{y}^m)}_{m \times n_L}
 \end{align*}
 the input matrix. 
-Let $z^{i, l}, a^{i, l}, \delta^{i, l}$ be the raw output, output, error vectors w.r.t.\ the
+Let $\V{z}^{i, l}, \V{a}^{i, l}, \V{\delta}^{i, l}$ be the raw output, output, error vectors w.r.t.\ the
 $i$-th example respectively. Let 
 \begin{align*}
-    Z^l &= {(z^{1, l}; \ldots; z^{m, l})}_{m \times n_l}\\
-    A^l &= {(a^{1, l}; \ldots; a^{m, l})}_{m \times n_l}\\
-    \Delta^l &= {(\delta^{1, l}; \ldots; \delta^{m, l})}_{m \times n_l}
+    \V{Z}^l &= {(\V{z}^{1, l}; \ldots; \V{z}^{m, l})}_{m \times n_l}\\
+    \V{A}^l &= {(\V{a}^{1, l}; \ldots; \V{a}^{m, l})}_{m \times n_l}\\
+    \V{\Delta}^l &= {(\V{\delta}^{1, l}; \ldots; \V{\delta}^{m, l})}_{m \times n_l}
 \end{align*}
 then we have:
 \begin{align}
-    Z^l &= A^{l-1} w^l + b^l\\
-    A^l &= \sigma(Z^l)\\
-    \Delta^L &= \nabla_{A^L}C \odot \sigma'(Z^L)\\
-    \Delta^l &= \left(\Delta^{l+1} \T{(w^{l+1})}\right) \odot \sigma'(Z^l)
+    \V{Z}^l &= \V{A}^{l-1} \V{W}^l + \V{b}^l\\
+    \V{A}^l &= \sigma(\V{Z}^l)\\
+    \V{\Delta}^L &= \nabla_{\V{A}^L}C \odot \sigma'(\V{Z}^L)\\
+    \V{\Delta}^l &= \left(\V{\Delta}^{l+1} \T{(\V{W}^{l+1})}\right) \odot \sigma'(\V{Z}^l)
 \end{align}
-If $C = \frac{1}{m}\sum_{i=1}^m C(\V{x}_i)$, then
-$$\pfrac{C}{b^l_j} = \operatorname{reduce\_mean}(\operatorname{col}_j(\Delta^l))$$
+If $C = \frac{1}{m}\sum_{i=1}^m C(\V{x}^i)$, then
+$$\pfrac{C}{b^l_j} = \operatorname{reduce\_mean}(\operatorname{col}_j(\V{\Delta}^l))$$
 and
-$$\pfrac{C}{w^l_{ij}} = \operatorname{reduce\_mean}(\operatorname{col}_i(A^{l-1}) \odot \operatorname{col}_j
-(\Delta^l))$$
+$$\pfrac{C}{w^l_{ij}} = \operatorname{reduce\_mean}(\operatorname{col}_i(\V{A}^{l-1}) \odot 
+\operatorname{col}_j (\V{\Delta}^l))$$
 
 \subsection{Cost Functions}
 
