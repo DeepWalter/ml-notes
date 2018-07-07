@@ -1,4 +1,4 @@
-\documentclass[11pt, a4paper]{article}
+\documentclass[11pt, a4paper]{book}
 \usepackage{amsmath, amssymb, amsbsy}
 \usepackage[amsmath, thmmarks]{ntheorem}
 \usepackage{algorithm}
@@ -84,47 +84,66 @@
 \date{}
 \maketitle
 
-% ========Abstract======================
-\include{sections/abstract} 
+\frontmatter
 
 % ========Table of Contents=============
 \tableofcontents
 
+% ========
+\mainmatter
+
+% ========Part One: Basics===========================
+\part{Basics}
 % ========Model Assessment and Selection======
-\include{sections/model_assessment_selection}
+\chapter{Model Assessment and Selection}
+\include{part_1/assessment/model_assessment_selection}
 
 % ========Linear Models================
-\include{sections/linear_model}
+\chapter{Linear Model}
+\include{part_1/linear/linear_model}
 
 % ========Decision Trees===============
-\include{sections/decision_tree}
+\chapter{Decision Tree}
+\include{part_1/tree/decision_tree}
 
 % ========SVM========================
-\include{sections/svm}
+\chapter{Support Vector Machine}
+\include{part_1/svm/svm}
 
 % ========Neuron Network
-\include{sections/neuron_network}
+\chapter{Neuron Networks}
+\include{part_1/nn/neuron_network}
 
 % ========Bayesian Classifier=========
-\include{sections/bayesian_classifier}
+\chapter{Bayesian}
+\include{part_1/bayes/bayesian_classifier}
 
 % ========Clustering=================
-\include{sections/clustering}
+\chapter{Clustering}
+\include{part_1/clustering/clustering}
 
 % ========Expectation Maximalization====
-\include{sections/EM}
+\chapter{Expectation Maximalization}
+\include{part_1/em/EM}
 
 % ========Ensemble Learning============
-\include{sections/ensemble_learning}
+\chapter{Ensemble Learning}
+\include{part_1/ensemble/ensemble_learning}
 
 % ========Dimension Reduction=========
-\include{sections/dimension_reduction}
+\chapter{Dimension Reduction}
+\include{part_1/reduction/dimension_reduction}
 
 % ========Computational Learning Theory
-\include{sections/CLT}
+\chapter{Computational Learning Theory}
+\include{part_1/clt/CLT}
 
 % ========Reinforcement Learning
-\include{sections/reinforcement_learning}
+\chapter{Reinforcement Learning}
+\include{part_1/reinforcement/reinforcement_learning}
+
+% ===========Part Two: Papers=====================
+\part{Selected Papers}
 
 
 \end{document}
