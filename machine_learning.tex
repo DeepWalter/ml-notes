@@ -16,7 +16,6 @@
     colorlinks=true%
 ]{hyperref}
 \usepackage[adjust, nocompress, space, super]{cite}
-
 % =========== 
 
 
@@ -83,24 +82,24 @@
 % Package: minted
 \setminted[python]{frame=single, linenos=true, numbersep=3pt, autogobble=true, mathescape=true}
 
-% =============================== Document =====================================
+% ========================================================================================================
+% ============================================= Document =================================================
+% ========================================================================================================
 \begin{document}
 
-% ========Title Page====================
+% =====================Title Page====================
 \title{\textbf{Machine Learning Notes}}
 \author{DeepWalter\thanks{Email: deepwalter.cn@gmail.com}}
 \date{}
 \maketitle
 
 \frontmatter
-
-% ========Table of Contents=============
+% =====================Table of Contents=============
 \tableofcontents
 
-% ========
+% ===================================================
 \mainmatter
-
-% ========Part One: Basics===========================
+% =============================Part One: Basics========================
 \part{Basics}
 % ========Model Assessment and Selection======
 \chapter{Model Assessment and Selection}
@@ -150,15 +149,19 @@
 \chapter{Reinforcement Learning}
 \include{part_1/reinforcement/reinforcement_learning}
 
-% ===========Part Two: Papers=====================
+% =============================Part Two: Papers====================
 \part{Selected Papers}
 
 \chapter{Neuron Networks}
 \include{part_2/nn/hornik_1989}
 \include{part_2/nn/cybenko_1989}
 
-% ===========Bibliography
+%============================================================
+\backmatter
+% ========================Bibliography=======================
 \addcontentsline{toc}{part}{Bibliography}
 \bibliographystyle{amsplain}
 \bibliography{notes}
+
+
 \end{document}
