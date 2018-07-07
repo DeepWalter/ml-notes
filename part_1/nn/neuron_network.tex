@@ -1,4 +1,4 @@
-\section{Neuron Network}
+
 
 % a 2 layer neuron network
 \begin{figure}[h]
@@ -46,7 +46,7 @@
     \caption{A 2 Layer Neuron Network}
 \end{figure}
 
-\subsection{Notations}
+\section{Notations}
 \begin{description}
     \item[$L$] output layer.
     \item[$n_l$] number of neurons in layer $l$. In particular, $n_0 = n$.
@@ -88,7 +88,7 @@ For a collection of examples, the cost function is the average cost on those exa
     C = \frac{1}{m} \sum_{i=1}^m C(\V{x}^i)
 \end{equation}
 
-\subsection{Backpropagation}
+\section{Backpropagation}
 First let's consider the case with a single input example. Let $\delta^l_j$ be the error in the $j$-th neuron
 in the $l$-th layer, i.e.
 \begin{equation}\label{delta_l_j}
@@ -190,10 +190,10 @@ and
 $$\pfrac{C}{w^l_{ij}} = \operatorname{reduce\_mean}(\operatorname{col}_i(\V{A}^{l-1}) \odot 
 \operatorname{col}_j (\V{\Delta}^l))$$
 
-\subsection{Cost Functions}
+\section{Cost Functions}
 
 
-\subsection{Regularizations}
-\subsubsection{$L^1$ and $L^2$ Regularizations}
+\section{Regularizations}
+\subsection{$L^1$ and $L^2$ Regularizations}
 
-\subsubsection{Dropout}
+\subsection{Dropout}
