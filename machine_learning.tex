@@ -8,7 +8,15 @@
 \usepackage{paralist}
 \usepackage{nicefrac}
 \usepackage{minted}
-\usepackage[colorlinks]{hyperref}
+\usepackage[%
+    bookmarksnumbered,%
+    bookmarksopen,%
+    pdftitle={Machine Learning Notes},%
+    pdfauthor=DeepWalter,%
+    colorlinks=true%
+]{hyperref}
+\usepackage[adjust, nocompress, space, super]{cite}
+
 % =========== 
 
 
@@ -146,6 +154,11 @@
 \part{Selected Papers}
 
 \chapter{Neuron Networks}
-\include{part_2/nn/universal_approximators}
+\include{part_2/nn/hornik_1989}
+\include{part_2/nn/cybenko_1989}
 
+% ===========Bibliography
+\addcontentsline{toc}{part}{Bibliography}
+\bibliographystyle{amsplain}
+\bibliography{notes}
 \end{document}
