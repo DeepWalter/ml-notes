@@ -1,4 +1,4 @@
-\documentclass[11pt, a4paper]{book}
+\documentclass[111pt, a4paper]{book}
 \usepackage{amsmath, amssymb, amsbsy}
 \usepackage[amsmath, thmmarks]{ntheorem}
 \usepackage{algorithm}
@@ -13,10 +13,19 @@
     bookmarksopen,%
     pdftitle={Machine Learning Notes},%
     pdfauthor=DeepWalter,%
-    colorlinks=true%
+    colorlinks=true,%
+    pagebackref=true,
 ]{hyperref}
-\usepackage[adjust, nocompress, space, super]{cite}
-% =========== 
+\usepackage[adjust, nocompress, space]{cite}
+\usepackage{setspace}
+
+% ============================================================================================================
+% ============================================================================================================
+
+% ============================= Spacing ========================================
+% ========== Row Spacing ============
+% Packages: setspace
+\setstretch{1.2} % with extra 20% row spacing.
 
 
 % ============================= Pseudocode Customization =======================
@@ -69,7 +78,7 @@
 
 % Shorthand commands:
 \newcommand{\hypo}[1]{\ensuremath{{#1}: \mathcal{X} \longrightarrow \mathcal{Y}}} % Hypothesis function.
-\newcommand{\dataset}{\ensuremath{D = \{(\V{x}_1, y_1), \ldots, (\V{x}_m, y_m)\}}} % Labeled training set.
+\newcommand{\dataset}{\ensuremath{D = \{(\V{x}_1, y_1), \dotsc, (\V{x}_m, y_m)\}}} % Labeled training set.
 \newcommand{\st}{\text{s.t.\ }}
 \newcommand{\magenta}[1]{\textcolor{magenta}{#1}} % turn the color of text into magenta.
 \newcommand{\hl}[2][yellow]{\colorbox{#1}{#2}} % highlight the text.
@@ -78,9 +87,10 @@
 % =====================================================
 \numberwithin{equation}{section}
 
-% =============================Python Code Customization========================
+% ============================= Python Code Customization ======================
 % Package: minted
 \setminted[python]{frame=single, linenos=true, numbersep=3pt, autogobble=true, mathescape=true}
+
 
 % ========================================================================================================
 % ============================================= Document =================================================

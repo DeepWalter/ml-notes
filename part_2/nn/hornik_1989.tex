@@ -1,2 +1,9 @@
 \section{Multilayer Feedforward Networks are Universal Approximators}
-the pape\cite{hornik_1989}
+This paper\cite{hornik_1989} proves that standard multilayer feedforward networks with as few as one hidden 
+layer using arbitrary squashing functions are capable of approximating any Borel measureble function, provided
+sufficiently many hidden units are available.
+
+\begin{df}[Squashing function]
+    A function $\phi: \mathbb{R}\longrightarrow [0, 1]$ is a squashing function if and only if it is non-decreasing, 
+    satifies $\lim_{\lambda \to \infty}\phi(\lambda) = 1$ and $\lim_{\lambda \to -\infty}\phi(\lambda) = 0$.
+\end{df}

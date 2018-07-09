@@ -46,9 +46,11 @@ which is obviously equivalent to:
 
 % validity of the above analysis.
 \begin{thm}
-    Assume the training set \dataset\ is \magenta{linear separable}, then there exists a unique hyperplane separating
-    the dataset with the largest margin, which is given by the solution of the above 
+%\begin{sloppypar}
+    Assume the training set \dataset\ is \magenta{linear separable}, then there exists a unique hyperplane 
+    separating the dataset with the largest margin, which is given by the solution of the above 
     problem~\eqref{hard_SVM}.
+%\end{sloppypar}
 \end{thm}
 \begin{pf}
     The existence part is immediately from the separability assumption.\\
@@ -156,7 +158,6 @@ In summary, we have
 \end{re}
 % duality of soft-SVM
 % TODO: supply more details.
-\par
 Following a similar process, we can get the dual problem of the soft SVM~\eqref{soft_SVM}:
 \begin{equation}
     \min_{\V{\alpha}} \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j\langle \V{x}_i, \V{x}_j\rangle -
