@@ -39,7 +39,7 @@
 
 % ============================= Math Theorem Envs ==============================
 \theorembodyfont{\normalfont}
-\newtheorem{df}{Definition}[section]
+\newtheorem{df}{Definition}[chapter]
 \newtheorem{thm}[df]{Theorem}
 \newtheorem{eg}[df]{Example}
 \newtheorem{prop}[df]{Proposition}
@@ -65,16 +65,21 @@
 \DeclareMathOperator{\tr}{tr} % trace of an matrix.
 
 
+
 % =============================== New Commands =================================
 % Logical connectives:
 \newcommand{\OR}{\textbf{OR} } % a space is needed here.
 \newcommand{\AND}{\textbf{AND} } 
-\newcommand{\XOR}{\textbf{XOR} } 
+\newcommand{\XOR}{\textbf{XOR} }
+
 
 % Math commands:
 \newcommand{\T}[1]{\ensuremath{{#1}^\mathsf{T}}} % Matrix transposition.
 \newcommand{\inv}[1]{\ensuremath{{#1}^{-1}}} % Inversion.
 \newcommand{\V}[1]{\ensuremath{\boldsymbol{#1}}}
+\newcommand{\forany}{\forall~} % append a non-breakable whitespace.
+\newcommand{\thereis}{\exists~} 
+\newcommand{\linspan}[1]{\ensuremath{\operatorname{\mathbf{span}}\left\{{#1}\right\}}}
 
 % Shorthand commands:
 \newcommand{\hypo}[1]{\ensuremath{{#1}: \mathcal{X} \longrightarrow \mathcal{Y}}} % Hypothesis function.
@@ -84,8 +89,6 @@
 \newcommand{\hl}[2][yellow]{\colorbox{#1}{#2}} % highlight the text.
 \newcommand{\pfrac}[2]{\ensuremath{\frac{\partial {#1}}{\partial {#2}}}}
 
-% =====================================================
-\numberwithin{equation}{section}
 
 % ============================= Python Code Customization ======================
 % Package: minted
