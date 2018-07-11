@@ -1,2 +1,116 @@
 \section{Approximation by Superpositions of a Sigmoidal Function}
-blalba\cite{cybenko_1989}
+This paper\cite{cybenko_1989} proves that the class of single hidden layer neuron networks can approximate any
+continuous function with support in the unit hypercube; only mild conditions are imposed on the activation
+function.
+
+\subsection{Terminology and Notation}
+Let $I_n = {[0, 1]}^n$. Let $\boldsymbol{C}(I_n)$ denote the collection of all continuous function on $I_n$
+and $||f||$ the supremum norm of $f \in \boldsymbol{C}(I_n)$. Let $M(I_n)$ denote the space of finite, 
+\magenta{signed} regular Borel measures on $I_n$.
+
+\begin{df}[Discriminatory function]
+    $\sigma: \mathbb{R} \longrightarrow \mathbb{R}$ is \textbf{discriminatory} if for a measure 
+    $\mu \in M(I_n)$ 
+    $$\int_{I_n} \sigma(\langle \V{w}, \V{x}\rangle + b) d\mu(\V{x}) = 0$$
+    for all $\V{w}, b$ implies that $\mu = 0$.
+\end{df}
+
+\begin{df}[Sigmoidal function]
+    $\sigma: \mathbb{R} \longrightarrow \mathbb{R}$ is sigmoidal if 
+    \begin{equation*}
+        \sigma(t) \to 
+        \begin{cases}
+            1 & \text{as $t \to \infty$}\\
+            0 & \text{as $t \to -\infty$}
+        \end{cases}
+    \end{equation*}
+\end{df}
+
+\subsection{Main Results}
+
+\begin{thm}[THM 1]
+    Let $\sigma$ be any \magenta{continuous} discriminatory function. Then the finite sums of the form
+    \begin{equation}
+        G(\V{x}) = \sum_{j=1}^N \alpha_j\sigma(\langle \V{w_j}, \V{x}\rangle + b)
+    \end{equation}
+    are dense in $\boldsymbol{C}(I_n)$.
+\end{thm}
+
+\begin{pf}
+    Let $S \subseteq \boldsymbol{C}(I_n)$ be the set of all such function $G$. If 
+    $\overline{S} \neq \boldsymbol{C}(I_n)$, then there is a $f_0 \in \boldsymbol{C}(I_n)\ \st f_0 \notin 
+    \overline{S}$. Let $\displaystyle d_0 = \dist(f_0, \overline{S}) = \inf_{s\in \overline{S}}||f_0 - s||$, then we have $d_0 > 0$.
+    Let $L$ be the linear functional on $\linspan{\overline{S}, f_0}$ defined as:
+    $$ L(s + \alpha f_0) = \alpha$$
+    It is easy to check that $L$ is a well defined linear functional on $\linspan{\overline{S}, f_0}$ and
+    $L(s) = 0\ \forany s \in \overline{S}$. Moreover, if $\alpha \neq 0$, we have
+    \begin{align*}
+        ||s + \alpha f_0|| &\geqslant |\alpha|\cdot ||-\tfrac{1}{\alpha}s - f_0||\\
+                           &\geqslant |\alpha| d_0\\
+                           &\geqslant d_0 \cdot |L(s + \alpha f_0)|
+    \end{align*}
+    That is $|L(s + \alpha f_0)| \leqslant \frac{1}{d_0} \cdot ||s + \alpha f_0||$. And this also holds true when
+    $\alpha = 0$ since $L(s) = 0$.
+    Since the supremum norm $||\cdot||$ is positive homogenous and subadditive on 
+    $\boldsymbol{C}(I_n)$, the Hahn-Banach theorem implies that $L$ can be extended to the whole 
+    $\boldsymbol{C}(I_n)$ \st $|L(f)| \leqslant \frac{1}{d_0} ||f||$. By the Riesz representation theorem, there is
+    some $\mu \in M(I_n)$ \st 
+    $$ L(h) = \int_{I_n} h(\V{x}) d\mu(\V{x})\quad\forany h \in \boldsymbol{C}(I_n)$$
+    Since $\sigma(\langle \V{w}, \V{x}\rangle + b) \in \overline{S}$, we have
+    $$ \int_{I_n} \sigma(\langle \V{w}, \V{x}\rangle + b) d\mu(\V{x}) = 0$$
+    for any $\V{w}, b$. Hence $\mu = 0$, which is a contradiction with $L(f_0) = 1$.
+\end{pf}
+
+\begin{lem}[LEMMA 1]
+    Any bounded, measurable sigmoidal function is discriminatory. In particular, any continuous sigmoidal
+    function is discriminatory.
+\end{lem}
+
+\begin{pf}
+    For any $\V{x}, \V{y}, \theta, \varphi$, we have
+    \begin{equation*}
+        \sigma_\lambda(\V{x}) := \sigma(\lambda(\langle \V{y}, \V{x}\rangle + \theta) + \varphi)
+        \begin{cases}
+            \to 1 & \text{for $\langle \V{y}, \V{x}\rangle + \theta > 0$ as $\lambda \to +\infty$}\\
+            \to 0 & \text{for $\langle \V{y}, \V{x}\rangle + \theta < 0$ as $\lambda \to +\infty$}\\
+            = \sigma(\varphi) & \text{for $\langle \V{y}, \V{x}\rangle + \theta = 0$ for all $\lambda$}
+        \end{cases}
+    \end{equation*}
+    That is, 
+    \begin{equation*}
+        \lim_{\lambda \to +\infty} \sigma_{\lambda}(\V{x}) =
+        \begin{cases}
+            1 & \text{for $\langle \V{y}, \V{x}\rangle + \theta > 0$}\\
+            0 & \text{for $\langle \V{y}, \V{x}\rangle + \theta < 0$}\\
+            \sigma(\varphi) & \text{for $\langle \V{y}, \V{x}\rangle + \theta = 0$}
+        \end{cases}
+    \end{equation*}
+    Since $\sigma$ is bounded, we have
+    \begin{align*}
+        0 &= \lim_{\lambda \to +\infty} \int_{I_n} \sigma_\lambda(\V{x}) d\mu(\V{x})\\
+          &= \int_{I_n} \lim_{\lambda \to +\infty}\sigma_\lambda(\V{x}) d\mu(\V{x})\\
+          &= \sigma(\varphi) \mu(\Pi_{\V{y}, \theta}) + \mu(H_{\V{y}, \theta})
+    \end{align*}
+    where $\Pi_{\V{y}, \theta} = \{\V{x} | \langle \V{y}, \V{x}\rangle + \theta = 0\}$ and 
+    $H_{\V{y}, \theta} = \{\V{x} | \langle \V{y}, \V{x}\rangle + \theta > 0\}$. Fix $\V{y}$, let $F$ be the 
+    linear functional
+    $$F(h) = \int_{I_n} h(\langle \V{y}, \V{x}\rangle) d\mu(\V{x})$$
+    It is bounded on $L^\infty(\mathbb{R})$. If $h = 1_{x \geqslant \theta}$, then
+    $$F(h) = \mu(\Pi_{\V{y}, -\theta}) + \mu(H_{\V{y}, -\theta}) = 0$$
+    If $h = 1_{x > \theta}$, similarly, we have
+    $$F(h) = \mu(H_{\V{y}, -\theta}) = 0$$
+    Hence $F$ is zero on simple fucntions, which implies $F = 0$ on $L^\infty(\mathbb{R})$. In particular,
+    $$F(\sin(\angpair{\V{y}}{\V{x}}) + i \cos(\angpair{\V{y}}{\V{x}})) = \int_{I_n} 
+    e^{i\angpair{\V{y}}{\V{x}}} d\mu(\V{x}) = 0$$
+    for all $\V{y}$, which implies that $\mu = 0$.
+\end{pf}
+
+Given the above lemma, it is obvious that:
+
+\begin{thm}
+    Let $\sigma$ be any continuous sigmoidal function. Then the finite sums of the form
+    \begin{equation}
+        G(\V{x}) = \sum_{j=1}^N \alpha_j\sigma(\langle \V{w_j}, \V{x}\rangle + b)
+    \end{equation}
+    are dense in $\boldsymbol{C}(I_n)$.
+\end{thm}
