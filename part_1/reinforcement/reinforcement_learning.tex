@@ -1,5 +1,3 @@
-\section{Reinforcement Learning}
-
 Let $X$ be the state space, $A$ the action space. Reinforcement learning can be described as a
 \textbf{Markov Decision Process}: system changes from a state to another under the actions from $A$ with a 
 rewarding function grading the change. That is, a reinforcement learning is a quadruple $E = \langle X, A, P,
@@ -19,11 +17,11 @@ accumulated reward} $\E[\frac{1}{T}\sum_{t=1}^{T}r_t]$ and \textbf{$\gamma$ disc
 $\E[\sum_{t=0}^{\infty}\gamma^t r_{t+1}]$ are two commonly used accumulated rewards, where $r_t$ is the reward
 of step $t$.
 
-\subsection{K-armed Bandit}
+\section{K-armed Bandit}
 The K-armed bandit is a model of one step reinforcement learning. Every time you pull one arm of the machine,
 it gives you some rewards with certain probability. The goal is to acquire as many rewards as possible.
 
-\subsubsection{Exploration and Exploitation}
+\subsection{Exploration and Exploitation}
 The \textbf{exploration-only} method tries to figure out the expectation reward of each arm. It divides the 
 exploration chance evenly on each arm, and use the average reward of each arm as the expectation reward. This
 method may do a good job in estimating each arm's reward, but it may miss the opportunity to get the most 
@@ -31,7 +29,7 @@ rewards. The \textbf{exploitation-only} method, on the other hand, only pulls th
 average rewards so far. Since it dosen't care about the expectation reward of each arm, it may also miss the
 opportunity to get the most rewards. 
 
-\subsubsection{$\varepsilon$-greedy}
+\subsection{$\varepsilon$-greedy}
 The $\varepsilon$-greedy is a compromise between exploration-only and exploitation-only method. At
 each try, it performs exploration-only method with a probability $\varepsilon$ and exploitation-only method
 the other $1 - \varepsilon$.\par
@@ -65,7 +63,7 @@ This is the updating rules for the average reward.
 
 % TODO: analysis of the epsilon-greedy.
 
-\subsubsection{Softmax}
+\subsection{Softmax}
 Softmax algorithm is another way of compromising between the exploration-only and exploitation-only methods. 
 Unlike the $\varepsilon$-greedy algorithm which uses a threshold to determine how to choose an arm, softmax 
 attach each arm with a probability to be chosen base on its current average reward. The probability 
@@ -98,14 +96,14 @@ $+\infty$), the softmax degenerates to uniform distribution, which is the case o
 % TODO: analysis of the softmax algorithm.
 
 \newpage
-\subsection{Model-based Learning}
+\section{Model-based Learning}
 In model-based learning, the quadruple $E = \langle X, A, P, R\rangle$ are known to us. That is, we know all
 the possible states, all the possible actions that may act on them, the transition function which describes
 the probability of one state changing into another under some action, the rewarding function which grades the
 change. In the following discussion, we assume that \magenta{the state space $X$ and the action space $A$ are
 finite}.
 
-\subsubsection{Policy Measurement}
+\subsection{Policy Measurement}
 Let $V^\pi(x)$ be the expected reward gained from applying policy $\pi$ on the starting state $x$, 
 $Q^\pi(x, a)$ the expected reward gained from first applying action $a$ then policy $\pi$ on the starting
 state $x$. $V$ and $Q$ are called \textbf{state value function} and \textbf{state-action value function}
@@ -203,7 +201,7 @@ V^\pi(x) = \sum_{a \in A}\pi(x, a)Q^\pi(x, a)
 
 % TODO: algorithms for state-action value functions.
 
-\subsubsection{Policy Improvement}
+\subsection{Policy Improvement}
 Of course, the best policy is the one that maximize the state value function, i.e.
 $$\pi^* = \argmax_\pi \sum_{x \in X}V(x)$$
 Due to the recursive nature of the state value functions~\eqref{state_value_T_expansion}
@@ -265,4 +263,4 @@ This justifies the choice of $\pi'(x)$.
 
 % TODO: value iteration
 
-\subsection{Model-free Learning}
+\section{Model-free Learning}
