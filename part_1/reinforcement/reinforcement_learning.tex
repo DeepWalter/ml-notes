@@ -232,7 +232,7 @@ the current best action for the state}. That is, let
 \pi'(x) = \argmax_{a \in A}Q^\pi(x, a)\quad\forall~x \in X
 \end{equation}
 Then by relation~\eqref{relation_V_Q}, we have
-$$Q^\pi(x, \pi'(x)) \geq V^\pi(x)$$
+$$Q^\pi(x, \pi'(x)) \geqslant V^\pi(x)$$
 Since $\pi'(x)$ is the action that should be taken on the state $x$, by relation~\eqref{relation_V_Q} again, 
 we have
 \begin{align*}
@@ -241,18 +241,18 @@ we have
 \end{align*}
 This gives us the following estimate:
 \begin{align*}
-    V^\pi(x) - V^{\pi'}(x) &\leq Q^\pi(x, \pi'(x)) - Q^{\pi'}(x, \pi'(x))\\
-                           &\leq \sum_{x' \in X}P_{x \rightarrow x'}^{\pi'(x)}\cdot\gamma\left(V^\pi(x') - 
+    V^\pi(x) - V^{\pi'}(x) &\leqslant Q^\pi(x, \pi'(x)) - Q^{\pi'}(x, \pi'(x))\\
+                           &\leqslant \sum_{x' \in X}P_{x \rightarrow x'}^{\pi'(x)}\cdot\gamma\left(V^\pi(x') - 
                            V^{\pi'}(x')\right)\\
-                           &\leq \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)\sum_{x' \in X}
+                           &\leqslant \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)\sum_{x' \in X}
                            P_{x \rightarrow x'}^{\pi'(x)}\\
-                           &\leq \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)
+                           &\leqslant \gamma \max_{x' \in X}\left(V^\pi(x') - V^{\pi'}(x')\right)
 \end{align*}
 Here, we use the fact that $P \geq 0$ and $\sum_{x' \in X}P_{x \rightarrow x'}^{\pi'(x)} = 1$. Since
 $\gamma \in (0, 1)$, we conclude that
-$$\max_{x \in X}\left(V^\pi(x) - V^{\pi'}(x)\right) \leq 0$$
+$$\max_{x \in X}\left(V^\pi(x) - V^{\pi'}(x)\right) \leqslant 0$$
 That is 
-$$V^\pi(x) \leq V^{\pi'}(x)\quad\forall~x \in X$$
+$$V^\pi(x) \leqslant V^{\pi'}(x)\quad\forall~x \in X$$
 This justifies the choice of $\pi'(x)$.
 \begin{re}
     Note that the above discussion is also valid in the case of $T$-steps accumulated state value function
