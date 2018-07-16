@@ -1,9 +1,8 @@
-\section{Support Vector Machine}
 Let \dataset\ be the training set where $y_i \in\{-1, +1\}$. The SVM is an algorithm that tries to find a 
 hyperplane $y = \langle\V{w}, \V{x}\rangle + b$ which separate the positive examples from the negative ones. The 
 corresponding predictor is $f(\V{x}) = \sign(\langle\V{w}, \V{x}\rangle + b)$.
 
-\subsection{Hard SVM}
+\section{Hard SVM}
 First we introduce the concept of the margin of a hyperplane:
 % margin of a hyperplane w.r.t. a training set.
 \begin{df}[Margin]
@@ -63,7 +62,7 @@ which is obviously equivalent to:
     Those $\V{x}_i$\,s are called \textbf{supporting vectors} of the hyperplane.
 \end{re}
 
-\subsection{Soft SVM}
+\section{Soft SVM}
 The hard SVM works well when the data set is linear separable, but it behaves poorly on the sets which are not
 linear separable since all the restrictions cannot be satisfied at the same time. In order to adapt to the 
 non-separable case, we can allow some points to break the restriction, and penalize them in the optimization
@@ -88,7 +87,7 @@ the problem~\eqref{soft_SVM_original} becomes:
 \end{equation}
 this is what we called the soft SVM\@.
 
-\subsection{Duality}
+\section{Duality}
 
 % duality of hard-SVM
 Let $h_i(\V{w}, b) = 1 - y_i(\langle \V{w}, \V{x}_i\rangle + b)$, then the hard SVM~\eqref{hard_SVM} becomes
@@ -176,4 +175,4 @@ $0 < \alpha_{i_0}^* < C$, then the solution of the soft SVM~\eqref{soft_SVM} can
     \end{cases}
 \end{equation}
 
-\subsection{Kernel method}
+\section{Kernel method}
