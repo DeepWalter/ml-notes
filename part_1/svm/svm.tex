@@ -3,7 +3,8 @@ hyperplane $y = \langle\V{w}, \V{x}\rangle + b$ which separate the positive exam
 corresponding predictor is $f(\V{x}) = \sign(\langle\V{w}, \V{x}\rangle + b)$.
 
 \section{Hard SVM}
-First we introduce the concept of the margin of a hyperplane:
+In the case of hard SVM, we assume that the training set is \magenta{linear separable}. Before going any 
+further about the ideas of SVM, let's first introduce the concept of the margin of a hyperplane:
 % margin of a hyperplane w.r.t. a training set.
 \begin{df}[Margin]
     The margin of a hyperplane w.r.t.\ a training set is the minimal Euclidean distance between the point in the 
@@ -23,23 +24,23 @@ Using the assumption that the hyperplane should correctly separates the training
 $$\gamma_i = \frac{y_i(\langle\V{w}, \V{x}_i\rangle + b)}{||\V{w}||}$$
 and $\gamma =\displaystyle \min_i \gamma_i$~, then the problem~\eqref{SVM_original} becomes:
 \begin{equation}
-    \argmax_{\V{w}, b} \gamma\;,\quad \st \frac{y_i(\langle\V{w}, \V{x}_i\rangle + b)}{||\V{w}||} \geq \gamma
-    \quad\forall\ i
+    \argmax_{\V{w}, b} \gamma\;,\quad \st \frac{y_i(\langle\V{w}, \V{x}_i\rangle + b)}{||\V{w}||} \geqslant
+     \gamma \quad\forall\ i
 \end{equation}
 Let $\gamma \gets ||\V{w}||\gamma$, the above problem becomes:
 \begin{equation}
-    \argmax_{\V{w}, b} \frac{\gamma}{||\V{w}||}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq \gamma
-    \quad\forall\ i
+    \argmax_{\V{w}, b} \frac{\gamma}{||\V{w}||}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geqslant
+    \gamma \quad\forall\ i
 \end{equation}
 Using the linear separable assumption again, we know that $\gamma > 0$. Let $\V{w} \gets \frac{\V{w}}{\gamma}$
 and $b \gets \frac{b}{\gamma}$, then the above becomes:
 \begin{equation}\label{SVM_argmax}
-    \argmax_{\V{w}, b} \frac{1}{||\V{w}||}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1
+    \argmax_{\V{w}, b} \frac{1}{||\V{w}||}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geqslant 1
     \quad\forall\ i
 \end{equation}
 which is obviously equivalent to:
 \begin{equation}\label{hard_SVM}
-    \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1
+    \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2}\;,\quad \st y_i(\langle\V{w}, \V{x}_i\rangle + b) \geqslant 1
     \quad\forall\ i
 \end{equation}
 
@@ -80,8 +81,8 @@ the problem~\eqref{soft_SVM_original} becomes:
 \begin{equation}\label{soft_SVM}
     \argmin_{\V{w}, b, \V{\xi}} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\xi_i\quad\st\left\{
     \begin{aligned}
-    & y_i(\langle\V{w}, \V{x}_i\rangle + b) \geq 1 - \xi_i\\
-    & \xi_i \geq 0 
+    & y_i(\langle\V{w}, \V{x}_i\rangle + b) \geqslant 1 - \xi_i\\
+    & \xi_i \geqslant 0 
     \end{aligned}\right.
     \quad\forall~i
 \end{equation}
@@ -91,11 +92,15 @@ this is what we called the soft SVM\@.
 
 % duality of hard-SVM
 Let $h_i(\V{w}, b) = 1 - y_i(\langle \V{w}, \V{x}_i\rangle + b)$, then the hard SVM~\eqref{hard_SVM} becomes
-$$\argmin_{\V{w},b} \frac{1}{2}||\V{w}||^2\quad\st h_i(\V{w}, b) \leq 0\quad\forall~i$$
+\begin{equation}\label{hard_SVM_reformatted}
+\argmin_{\V{w},b} \frac{1}{2}||\V{w}||^2\quad\st h_i(\V{w}, b) \leqslant 0\quad\forall~i
+\end{equation}
 Its Lagrangian is
 \begin{equation}\label{Lagrangian_hard_SVM}
     L(\V{w}, b; \V{\alpha}) = \frac{1}{2}||\V{w}||^2 + \sum_i \alpha_i h_i(\V{w}, b)
 \end{equation}
+The the above orignal problem~\eqref{hard_SVM_reformatted} is equivalent to
+$$\argmin_{\V{w}, b}\max_{\V{\alpha}: \alpha_i \geqslant 0} L(\V{w}, b; \V{\alpha})$$
 Let $\displaystyle\theta_D(\V{\alpha}) = \min_{\V{w}, b}L(\V{w}, b; \V{\alpha})$, then 
 $\nabla_{\V{w}, b} L(\V{w}, b; \V{\alpha}) = 0$ gives
 \begin{subequations}
@@ -109,13 +114,14 @@ Substitute equation~\eqref{sub:w} into the Lagrangian~\eqref{Lagrangian_hard_SVM
     \theta_D(\V{\alpha}) = \sum_i \alpha_i - \frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \V{x}_i, 
     \V{x}_j\rangle
 \end{equation}
-Hence the dual problem $\displaystyle \max_{\V{\alpha}: \alpha_i \geq 0}\theta_D(\V{\alpha})$ becomes
+Hence the dual problem $\displaystyle \max_{\V{\alpha}: \alpha_i \geqslant 0} \argmin_{\V{w}, b}
+L(\V{w}, b; \V{\alpha}) = \max_{\V{\alpha}: \alpha_i \geqslant 0}\theta_D(\V{\alpha})$ becomes
 \begin{equation*}
     \max_{\V{\alpha}}\sum_i \alpha_i - \frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \V{x}_i, \V{x}_j
     \rangle\quad\st \left\{
     \begin{aligned}
     &\sum_i y_i \alpha_i = 0\\
-    &\alpha_i \geq 0\quad\forall~i
+    &\alpha_i \geqslant 0\quad\forall~i
     \end{aligned}\right.
 \end{equation*}
 or equivalently
@@ -124,29 +130,30 @@ or equivalently
     \sum_i \alpha_i \quad\st \left\{
     \begin{aligned}
         &\sum_i y_i \alpha_i = 0\\
-        &\alpha_i \geq 0\quad\forall~i
+        &\alpha_i \geqslant 0\quad\forall~i
         \end{aligned}\right.
 \end{equation}
 Note that $\frac{1}{2}||\V{w}||^2$ is convex and $h_i$ are affine linear. And the linear separable assumption
-guarantees that there is $(\V{w}, b)$ \st $h_i(\V{w}, b) \leq 0\;\forall~i$. Hence there is a solution
+guarantees that there is some $(\V{w}, b)$ \st $h_i(\V{w}, b) < 0\;\forall~i$, i.e.\ the inequality 
+restrictions are strict. Hence there is a solution
 $(\V{w}^*, b^*)$ for the hard SVM~\eqref{hard_SVM}, and a solution $\V{\alpha}^*$ for the dual
 problem~\eqref{dual_hard_SVM}. Moreover, they satisfy the KKT condition:
 \begin{equation}\label{KKT_hard_SVM}
     \begin{cases}
         &\V{w}^* - \sum_i \alpha_i^* y_i \V{x}_i = 0\\
         &\sum_i y_i \alpha_i^* = 0\\
-        & \alpha_i^* \geq 0\\
-        & h_i(\V{w}^*, b^*) \leq 0\\
+        & \alpha_i^* \geqslant 0\\
+        & h_i(\V{w}^*, b^*) \leqslant 0\\
         & \alpha_i^* h_i(\V{w}^*, b^*) = 0
     \end{cases}
 \end{equation}
-Note that not all $\alpha_i^*$ could be $0$ (otherwise $\V{w}^* = 0$, which is not a solution of the hard SVM).
+Notice that not all $\alpha_i^*$ could be $0$ (otherwise $\V{w}^* = 0$, which is not a solution of the hard SVM).
 Let $\alpha^*_{i_0} > 0$. Then $\alpha_{i_0}^* h_{i_0}(\V{w}^*, b^*) = 0$ implies
 \begin{equation*}
     b^* = y_{i_0} - \sum_i \alpha_i^* y_i \langle \V{x}_i, \V{x}_{i_0}\rangle
 \end{equation*}
 In summary, we have
-\begin{equation}
+\begin{equation}\label{solution_hard_SVM}
     \begin{cases}
         &\V{w}^* = \sum_i \alpha_i^* y_i \V{x}_i\\
         &b^* = y_{i_0} - \sum_i \alpha_i^* y_i \langle \V{x}_i, \V{x}_{i_0}\rangle
@@ -163,7 +170,7 @@ Following a similar process, we can get the dual problem of the soft SVM~\eqref{
     \sum_i \alpha_i\quad\st \left\{
     \begin{aligned}
         &\sum_i \alpha_i y_i = 0\\
-        &0 \leq \alpha_i \leq C \quad\forall~i
+        &0 \leqslant \alpha_i \leqslant C \quad\forall~i
     \end{aligned}\right.
 \end{equation}
 Let $\V{\alpha}^*$ be the solution to the above dual problem. If there is some $\alpha_{i_0}$ such that 
@@ -175,4 +182,74 @@ $0 < \alpha_{i_0}^* < C$, then the solution of the soft SVM~\eqref{soft_SVM} can
     \end{cases}
 \end{equation}
 
-\section{Kernel method}
+\section{Kernel Method}
+The general idea of kernel method is that after mapping the original feature space into an Hilbert space via
+a map $\phi$, if we need to compute the inner product \angpair{\phi(\V{x}_i)}{\phi(\V{x}_j)} which usually is
+difficult, we hope that there is a kernel function $\kappa$ \st $\angpair{\phi(\V{x}_i)}{\phi(\V{x}_j)} =
+\kappa(\V{x}_i, \V{x}_j)$ and the latter is easier to compute. Following this idea, the dual problem~\eqref{dual_hard_SVM} in
+Hilbert space
+\begin{equation}
+    \min_{\V{\alpha}}\frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle \phi(\V{x}_i), \phi(\V{x}_j)\rangle
+    - \sum_i \alpha_i \quad\st \left\{
+    \begin{aligned}
+        &\sum_i y_i \alpha_i = 0\\
+        &\alpha_i \geqslant 0\quad\forall~i
+        \end{aligned}\right.
+\end{equation}
+becomes
+\begin{equation}
+    \min_{\V{\alpha}}\frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j \kappa(\V{x}_i, \V{x}_j)
+    - \sum_i \alpha_i \quad\st \left\{
+    \begin{aligned}
+        &\sum_i y_i \alpha_i = 0\\
+        &\alpha_i \geqslant 0\quad\forall~i
+        \end{aligned}\right.
+\end{equation}
+and its solution satifies
+\begin{equation}
+    \begin{cases}
+        &\V{w}^* = \sum_i \alpha_i^* y_i \phi(\V{x}_i)\\
+        &b^* = y_{i_0} - \sum_i \alpha_i^* y_i \kappa(\V{x}_i, \V{x}_{i_0})
+    \end{cases}
+\end{equation}
+Hence the predictor is 
+$$y = \sign\left(\sum_i \alpha_i^* y_i \kappa(\V{x}_i, \V{x}) + y_{i_0} - \sum_i \alpha_i^* y_i 
+\kappa(\V{x}_i, \V{x}_{i_0})\right)$$
+
+\begin{thm}[Kernel function]
+    Let $\mathcal{X}$ be a feature space, $\kappa(\cdot\,, \cdot)$ is some symmetric function on 
+    $\mathcal{X} \times \mathcal{X}$, then $\kappa$ is a kernel function if and only if for any data set
+    $D = \{\V{x}_1, \dotsc, \V{x}_m\}$, the matrix
+    \begin{equation*}
+        \begin{bmatrix}
+            \kappa(\V{x}_1, \V{x}_1) &\cdots &\kappa(\V{x}_1, \V{x}_j) &\cdots &\kappa(\V{x}_1, \V{x}_m)\\
+            \vdots                   &\ddots &\vdots                   &\ddots &\vdots\\
+            \kappa(\V{x}_i, \V{x}_1) &\cdots &\kappa(\V{x}_i, \V{x}_j) &\cdots &\kappa(\V{x}_i, \V{x}_m)\\
+            \vdots                   &\ddots &\vdots                   &\ddots &\vdots\\
+            \kappa(\V{x}_m, \V{x}_1) &\cdots &\kappa(\V{x}_m, \V{x}_j) &\cdots &\kappa(\V{x}_m, \V{x}_m)
+        \end{bmatrix}
+    \end{equation*}
+    is semi-positive.
+\end{thm}
+
+\begin{prop}
+    Let $\kappa_1$ and $\kappa_2$ be any kernel functions. Then
+    \begin{compactenum}
+        \item For any $\gamma_1, \gamma_2 > 0$, $\gamma_1 \kappa_1 + \gamma_2 \kappa_2$ is a kernel function.
+        \item $\kappa_1 \cdot \kappa_2$ is a kernel function.
+        \item For any function $g$, $\kappa(\V{x}, \V{y}) := g(\V{x})\kappa_1(\V{x}, \V{y})g(\V{y})$ is a 
+        kernel function.
+    \end{compactenum}
+\end{prop}
+Some useful kernels are:
+\begin{compactenum}
+    \item Linear kernel: $\kappa(\V{x}_1, \V{x}_2) = \langle \V{x}_1, \V{x}_2 \rangle$.
+    \item Polynomial kernel: $\kappa(\V{x}_1, \V{x}_2) = {\langle \V{x}_1, \V{x}_2 \rangle}^d$ where 
+    $d \geqslant 1$.
+    \item Guassian kernel: $\kappa(\V{x}_1, \V{x}_2) = \exp(-\frac{||\V{x}_1 - \V{x}_2||^2}{2\sigma^2})$ where
+    $\sigma > 0$.
+    \item Laplacian kernel: $\kappa(\V{x}_1, \V{x}_2) = \exp(-\frac{||\V{x}_1 - \V{x}_2||}{\sigma})$ where
+    $\sigma > 0$.
+    \item Sigmoid kernel: $\kappa(\V{x}_1, \V{x}_2) = \tanh(\beta \langle \V{x}_1, \V{x}_2\rangle + \theta)$
+    where $\beta > 0,\;\theta < 0$.
+\end{compactenum}
