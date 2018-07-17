@@ -1,7 +1,9 @@
-\section{Ensemble Learning}
-
-\subsection{AdaBoost}
-
+\section{AdaBoost}
+AdaBoost combines a family of base (weak) learners from an algorithm linearly to get a stronger (more
+powerful) one. It takes advantage
+of a former learner and use its output to force the latter learner to focus more on those data on which the
+former learner performs poorly. In this way, it hopes to make the aggregate learner performs well on all
+training data. Thus AdaBoost focus more on reducing the bias. 
 % AdaBoost algorithm
 \begin{algorithm}
     \caption{AdaBoost}\label{AdaBoost}
@@ -14,15 +16,64 @@
             \State $h_t = \mathcal{L}(D, \mathcal{D}_t)$;
             \State $\varepsilon_t = \p_{\V{x}\sim\mathcal{D}_t}(h_t(\V{x})\neq f(\V{x}))$;\Comment{
             $\varepsilon_t$ is the error rate of $h_t$ w.r.t $\mathcal{D}_t$.}
-            \State $\alpha_t = \frac{1}{2}\ln{\frac{1 - \varepsilon_t}{\varepsilon_t}}$;
+            \State $\alpha_t = \frac{1}{2}\ln{\frac{1 - \varepsilon_t}{\varepsilon_t}}$;\label{AdaBoost_alphat}
             \State $\mathcal{D}_{t + 1}(\V{x}) = \frac{\mathcal{D}_t(\V{x})\exp(-\alpha_t f(\V{x})h_t(\V{x}))}
-            {Z_t}$.\Comment{$Z_t$ is the normalization factor.}
+            {Z_t}$.\Comment{$Z_t$ is the normalization factor.}\label{AdaBoost_distritution}
         \EndFor
         \Ensure $H(\V{x}) = \sign(\displaystyle\sum_{t = 1}^T \alpha_t h_t(\V{x}))$
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{Bagging}
+%TODO: equivalent to 0/1 loss function.
+Consider the exponential loss function
+\begin{equation}
+    L_{\exp}(H | \mathcal{D}) = \E_{\V{x}\sim\mathcal{D}}[e^{-f(\V{x})H(\V{x})}]
+\end{equation}
+We want to find a linear combination of base learners 
+$$ H(\V{x}) = \sum_{t=1}^T \alpha_t h_t(\V{x})$$
+that minimize it. Although it is difficult to find such $H$ as a whole, we can approach this problem step by
+step. That is, we first find some $h_1$ and $\alpha_1$ \st $H_1 = \alpha_1 h_1$ minimize the exponential loss,
+then we find some $h_2$ and $\alpha_2$ \st $H_2 = H_1 + \alpha_2 h_2$ minimize the exponential loss too. And
+we carray on this process until $t = T$. Assume we have $H_{t-1}$ and want to find the next learner and its
+weight, that is, we want to find $\alpha_t$ and $h_t$ \st $H_t = H_{t-1} + \alpha_t h_t$ minimize the 
+exponential loss. Since
+\begin{align*}
+    L_{\exp}(H_t | \mathcal{D}) &= L_{\exp}(H_{t-1} + \alpha_t h_t | \mathcal{D})\\
+    &= \E_{\V{x}\sim \mathcal{D}}[e^{-f(\V{x})H_{t-1}(\V{x})}\cdot e^{-f(\V{x})\alpha_t h_t(\V{x})}]\\
+    &= C_{t-1} \E_{\V{x}\sim \mathcal{D}}[\frac{e^{-f(\V{x})H_{t-1}(\V{x})}}{C_{t-1}}
+    e^{-f(\V{x})\alpha_t h_t(\V{x})}]\\
+    &= C_{t-1} \E_{\V{x}\sim \mathcal{D}_t}[e^{-f(\V{x})\alpha_t h_t(\V{x})}]
+\end{align*}
+where $C_{t-1} = \E_{\V{x}\sim\mathcal{D}}[e^{-f(\V{x})H_{t-1}(\V{x})}]$ is a constant and 
+$\mathcal{D}_t = \frac{e^{-f(\V{x})H_{t-1}(\V{x})}}{C_{t-1}} \mathcal{D}$ is a distribution, we have
+\begin{align}
+    L_{\exp}(H_t | \mathcal{D}) &= C_{t-1} \left\{e^{-\alpha_t} \p_{\V{x}\sim\mathcal{D}_t}(f(\V{x})=h_t(\V{x})) 
+    + e^{\alpha_t}\p_{\V{x}\sim\mathcal{D}_t}(f(\V{x})\neq h_t(\V{x}))\right\}\nonumber\\
+    &= C_{t-1} \{e^{-\alpha_t}(1 - \varepsilon_t) + e^{\alpha_t}\varepsilon_t\}\label{Ada_exp_loss_expansion}
+\end{align}
+where $\varepsilon_t$ is the error rate of $h_t$ w.r.t.\ the distribution $\mathcal{D}_t$. Hence 
+$$\pfrac{ }{\alpha_t}L_{\exp}(H_t | \mathcal{D}) = 0$$
+implies 
+\begin{equation}\label{AdaBoost_weight}
+    \alpha_t = \frac{1}{2}\ln(\frac{1-\varepsilon_t}{\varepsilon_t})
+\end{equation}
+which justifies the choice of $\alpha_t$ in line~\algref{AdaBoost}{AdaBoost_alphat}. Moreover, 
+$$\mathcal{D}_t = \frac{e^{-f(\V{x})H_{t-1}(\V{x})}}{C_{t-1}} \mathcal{D}$$
+implies
+\begin{align}
+\mathcal{D}_{t+1}(\V{x}) &= \frac{e^{-f(\V{x})\alpha_t h_t(\V{x})}C_{t-1}\mathcal{D}_t(\V{x})}{C_t}\nonumber\\
+                         &= \frac{e^{-f(\V{x})\alpha_t h_t(\V{x})}\mathcal{D}_t(\V{x})}{Z_t}
+\end{align}
+which justifies the choice of $\mathcal{D}_t$ in line~\algref{AdaBoost}{AdaBoost_distritution}. If we plug
+equation~\eqref{AdaBoost_weight} into~\eqref{Ada_exp_loss_expansion}, we get
+$$L_{\exp}(H_t | \mathcal{D}) = 2C_{t-1}\cdot\sqrt{\varepsilon_t (1-\varepsilon_t)}$$
+Since the performance of the base learner is slightly above the average, that is, 
+$\varepsilon_t < \frac{1}{2}$, the minimum of the exponential loss is achieved at the $h_t$ which has 
+the minimal error rate w.r.t.\ $\mathcal{D}_t$. That is, $h_t$ is the output of the algorithm w.r.t.\ the 
+distribution $\mathcal{D}_t$ over the training data.
+
+
+\section{Bagging}
 
 % Bagging algorithm
 \begin{algorithm}
@@ -38,6 +89,6 @@
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{Random Forest}
+\section{Random Forest}
 
 % 
