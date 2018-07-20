@@ -1,5 +1,5 @@
 \section{AdaBoost}
-AdaBoost combines a family of base (weak) learners from an algorithm linearly to get a stronger (more
+AdaBoost combines a family of binary classification base (weak) learners from an algorithm linearly to get a stronger (more
 powerful) one. It takes advantage
 of a former learner and use its output to force the latter learner to focus more on those data on which the
 former learner performs poorly. In this way, it hopes to make the aggregate learner performs well on all
@@ -16,9 +16,10 @@ training data. Thus AdaBoost focus more on reducing the bias.
             \State $h_t = \mathcal{L}(D, \mathcal{D}_t)$;
             \State $\varepsilon_t = \p_{\V{x}\sim\mathcal{D}_t}(h_t(\V{x})\neq f(\V{x}))$;\Comment{
             $\varepsilon_t$ is the error rate of $h_t$ w.r.t $\mathcal{D}_t$.}
+            \breakif{$\varepsilon_t > 0.5$}\Comment{Base learner must be above average.}
             \State $\alpha_t = \frac{1}{2}\ln{\frac{1 - \varepsilon_t}{\varepsilon_t}}$;\label{AdaBoost_alphat}
             \State $\mathcal{D}_{t + 1}(\V{x}) = \frac{\mathcal{D}_t(\V{x})\exp(-\alpha_t f(\V{x})h_t(\V{x}))}
-            {Z_t}$.\Comment{$Z_t$ is the normalization factor.}\label{AdaBoost_distritution}
+            {Z_t}$.\Comment{$Z_t$ is the normalization constant.}\label{AdaBoost_distritution}
         \EndFor
         \Ensure $H(\V{x}) = \sign(\displaystyle\sum_{t = 1}^T \alpha_t h_t(\V{x}))$
     \end{algorithmic}
@@ -74,6 +75,10 @@ distribution $\mathcal{D}_t$ over the training data.
 
 
 \section{Bagging}
+Bagging is short for bootstrap aggregating, namely we use bootstrap sampling to sample $T$ groups of training
+data, and train $T$ base learners using those groups, then we aggregate those $T$ base learners into one via 
+plurality vote (for classification) or averaging (for regression). In this way, bagging mainly focus on
+reducing the variance.
 
 % Bagging algorithm
 \begin{algorithm}
@@ -89,6 +94,15 @@ distribution $\mathcal{D}_t$ over the training data.
     \end{algorithmic}
 \end{algorithm}
 
+Unlike the AdaBoost in the preceding section, bagging can be applied to multiclass classification and
+regression without any modifications. Morover, due to bootstrap sampling, we have around $36.8\%$ samples
+untouched in each training, which can be used to do the out-of-bag estimation for testing the generalization
+ability.
+
 \section{Random Forest}
+A forest is a collection of trees. When applying bagging to decision tree, we get a forest. A random forest is
+obtained this way with randomness. Namely, when deciding the best feature for an internal node, we restrict 
+the candidates to an randomly chosen subset from all possible features. Usually, the size of subset is 
+$\log_2 d$ where $d$ is the total number of all possible features.
 
 % 
