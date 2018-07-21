@@ -224,7 +224,9 @@ $y_i(\langle\V{w}^*, \V{x}_i\rangle + b^*) = 1 - \xi^*_i$. Those $\V{x}_i$ are c
 Moreover, if $\alpha^*_i < C$, then $\beta^*_i > 0$, hence $\xi^*_i = 0$ and
 $y_i(\langle\V{w}^*, \V{x}_i\rangle + b^*) = 1$, thus those supporting vectors locate on the decision 
 boundaries; if $\alpha^*_i = C$, then $\beta^*_i = 0$, thus those supporting vectors locate between the
-decision boundaries if $\xi^*_i \leqslant 1$ and they are mis-classified if $\xi^*_i > 1$.
+decision boundaries if $\xi^*_i \leqslant 1$ and they are mis-classified if $\xi^*_i > 1$. If $\alpha^*_i = 0$,
+then $\beta^*_i = C$ and $\xi^*_i = 0$, thus $1 \leqslant y_i(\langle\V{w}^*, \V{x}_i\rangle + b^*)$, that is 
+they are correctly classified\footnote{but they don't affect the separating hyperplane.}.
 
 If there is some $\alpha_{i_0}$ such that 
 $0 < \alpha_{i_0}^* < C$, then the solution of the soft SVM~\eqref{soft_SVM} can be written as:
