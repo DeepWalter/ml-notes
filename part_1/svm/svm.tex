@@ -78,12 +78,12 @@ target. That is, we can consider the following problem:
     + b)\big)
 \end{equation}
 Here, if $y_i(\langle\V{w}, \V{x}_i\rangle + b) < 1$, we add the penalization 
-$1 - y_i(\langle\V{w}, V{x}_i\rangle +b)$ to the 
+$1 - y_i(\langle\V{w}, \V{x}_i\rangle +b)$ to the 
 optimization target; otherwise, no penalization is added. The constant $C > 0$ is the weight that determines 
 how much the penalization matters (or how much you can violate the restrictions). For example, if $C = 0$, 
 then the penalization dosen't matter and you can violate all the restrictions; if $C = +\infty$, then the 
 penalization matters most and you cannot violate any single restriction.\par
-If we introduce the slack variabels $\xi_i = \max\big(0, 1 - y_i(\T{\V{w}}\V{x}_i +b)\big)$, then
+If we introduce the slack variabels $\xi_i = \max\big(0, 1 - y_i(\langle\V{w}, \V{x}_i\rangle +b)\big)$, then
 the problem~\eqref{soft_SVM_original} becomes:
 \begin{equation}\label{soft_SVM}
     \argmin_{\V{w}, b, \V{\xi}} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\xi_i\quad\st\left\{
@@ -168,7 +168,8 @@ In summary, we have
 \end{equation}
 \begin{re}
     For those indices $i$ \st $\alpha^*_i > 0$, the corresponding $\V{x}_i$ are the supporting vectors since
-    $h_i(\V{w}^*, b^*) = 0$.
+    $h_i(\V{w}^*, b^*) = 0$. And it is easy to see that those $\V{x}_i$ with $\alpha^*_i = 0$ do not affect the
+    hyperplane.
 \end{re}
 
 % duality of soft-SVM
@@ -194,7 +195,7 @@ Hence we have:
     \theta_D(\V{\alpha}, \V{\beta}) =  \sum_i \alpha_i - \frac{1}{2}\sum_{i, j}\alpha_i\alpha_j y_i y_j\langle
     \V{x}_i, \V{x}_j\rangle
 \end{equation}
-exactly the same as before. Hence the dual problem of soft SVM~\eqref{soft_SVM} is
+which is exactly the same as before. Hence the dual problem of soft SVM~\eqref{soft_SVM} is
 \begin{equation}\label{dual_soft_SVM}
     \min_{\V{\alpha}} \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j\langle \V{x}_i, \V{x}_j\rangle -
     \sum_i \alpha_i\quad\st \left\{
