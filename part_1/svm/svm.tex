@@ -311,3 +311,95 @@ Some useful kernels are:
     \item Sigmoid kernel: $\kappa(\V{x}_1, \V{x}_2) = \tanh(\beta \langle \V{x}_1, \V{x}_2\rangle + \theta)$
     where $\beta > 0,\;\theta < 0$.
 \end{compactenum}
+
+\section{Support Vector Regression}
+Although SVM is used for binary classification, we can apply its idea to linear regression. Namely, we can
+tolerate those examples that are close enough to the predictor and only penalize those that are far away.
+More specifically, we want to find the predictor $f(\V{x}) = \langle\V{w}, \V{x}\rangle + b$ by minimizing the loss
+\marginnote{$L$ is just a regularized loss.}
+\begin{equation}\label{SVR_loss}
+    L(\V{w}, b) := \frac{1}{2}||\V{w}||^2 + C\sum_{i=1}^m l_\varepsilon(\hat{y}_i - y_i)
+\end{equation}
+where $l_\varepsilon$ is the $\varepsilon$-insensitive loss:
+\begin{equation}\label{epsilon_insensitive_loss}
+    l_\varepsilon(z) = 
+    \begin{cases}
+        0, & \text{if}~ |z| < \varepsilon\\
+        |z| - \varepsilon, & \text{otherwise}
+    \end{cases}
+\end{equation}
+Notice that $l_\varepsilon(z) = \max(|z| - \varepsilon, 0) = \max(z - \varepsilon, -z - \varepsilon, 0)$, if
+we introduce the slack variabels $\xi_i = l_\varepsilon(\hat{y}_i - y_i)$, the problem becomes
+\begin{equation}
+    \argmin_{\V{w}, b, \V{\xi}} \frac{1}{2}||\V{w}||^2 + C\sum_{i=1}^m \xi_i \quad\st\quad\left\{
+    \begin{aligned}
+        &\xi_i \geqslant 0\\
+        &\xi_i \geqslant \hat{y}_i - y_i - \varepsilon\\
+        &\xi_i \geqslant -\hat{y}_i + y_i - \varepsilon
+    \end{aligned}\right.\forany i
+\end{equation}
+Its Lagrangian is:
+\begin{multline}
+    L(\V{w}, b, \V{\xi}; \V{\alpha}, \V{\beta}, \V{\gamma}) = \frac{1}{2} ||\V{w}||^2 + C\sum_{i=1}^m \xi_i
+    + \sum_{i=1}^m \alpha_i (-\xi_i) + \sum_{i=1}^m \beta_i (\hat{y}_i - y_i -\xi_i -\varepsilon)
+    \\+ \sum_{i=1}^m \gamma_i (-\hat{y}_i + y_i - \xi_i -\varepsilon)
+\end{multline}
+Its dual problem is 
+$$\max_{\substack{\V{\alpha}, \V{\beta}, \V{\gamma}\\ \alpha_i, \beta_i, \gamma_i \geqslant 0}}
+\min_{\V{w}, b, \V{\xi}} L(\V{w}, b, \V{\xi};\V{\alpha}, \V{\beta}, \V{\gamma})$$
+For the inner minimization problem,
+$$\nabla_{\V{w}, b, \V{\xi}}L(\V{w}, b, \V{\xi};\V{\alpha}, \V{\beta}, \V{\gamma}) = 0$$
+gives
+\begin{subequations}
+    \begin{align}
+        &\V{w} = \sum_i (\gamma_i - \beta_i) \V{x}_i\\
+        &\sum_i (\beta_i - \gamma_i) = 0\\
+        &C = \alpha_i + \beta_i + \gamma_i
+    \end{align}
+\end{subequations}
+Substitute those equations into the dual problem, we get
+\begin{equation*}
+    \max_{\substack{\V{\alpha}, \V{\beta}, \V{\gamma}\\ \alpha_i, \beta_i, \gamma_i \geqslant 0}} 
+    -\frac{1}{2}\sum_{i, j}(\beta_i - \gamma_i)(\beta_j - \gamma_j)
+    \langle\V{x}_i, \V{x}_j\rangle + \sum_i \big(y_i(\gamma_i - \beta_i) - \varepsilon(\gamma_i + \beta_i)\big)
+\end{equation*}
+which is equivalent to
+\begin{equation}
+    \min_{\substack{\V{\beta}, \V{\gamma} \\ \beta_i, \gamma_i \geqslant 0}} \frac{1}{2}
+    \sum_{i, j}(\beta_i - \gamma_i)(\beta_j - \gamma_j)
+    \langle\V{x}_i, \V{x}_j\rangle + \sum_i \big(\varepsilon(\beta_i + \gamma_i) + y_i(\beta_i - \gamma_i)\big)
+\end{equation}
+subjecting to the conditions
+\begin{equation*}
+    \begin{cases}
+        & \sum_i (\beta_i - \gamma_i) = 0\\
+        & \beta_i + \gamma_i \leqslant C\\
+        & \beta_i \geqslant 0\\
+        & \gamma_i \geqslant 0
+    \end{cases}
+\end{equation*}
+Moreover, the KKT condition is
+\begin{equation}
+    \begin{cases}
+        &\V{w} = \sum_i (\gamma_i - \beta_i) \V{x}_i\\
+        &\sum_i (\beta_i - \gamma_i) = 0\\
+        &C = \alpha_i + \beta_i + \gamma_i\\
+        &\alpha_i, \beta_i, \gamma_i \geqslant 0\\
+        &\xi_i \geqslant 0\\
+        &\hat{y}_i - y_i - \xi_i - \varepsilon \leqslant 0\\
+        &-\hat{y}_i + y_i -\xi_i - \varepsilon \leqslant 0\\
+        &\alpha_i \xi_i = 0\\
+        &\beta_i (\hat{y}_i - y_i - \xi_i - \varepsilon) = 0\\
+        &\gamma_i (-\hat{y}_i + y_i -\xi_i - \varepsilon) = 0
+    \end{cases}
+\end{equation}
+If $\beta_i > 0$, then $\hat{y}_i - y_i -\xi_i - \varepsilon = 0$, from this we can get
+\begin{equation}
+    b = y_i + \xi_i + \varepsilon - \sum_{j=1}^m(\gamma_j-\beta_j)\langle\V{x}_j, \V{x}_i\rangle
+\end{equation}
+Similarly, if $\gamma_i > 0$, then $-\hat{y}_i + y_i -\xi_i - \varepsilon = 0$, which implies
+\begin{equation}
+    b = y_i - \xi_i - \varepsilon - \sum_{i=1}^m (\gamma_j - \beta_j)\langle\V{x}_j, \V{x}_i\rangle
+\end{equation}
+To get the bias $b$ of the predictor, we can first calculate all $b$\,s by the above two equations, then use
+their average as the bias.
