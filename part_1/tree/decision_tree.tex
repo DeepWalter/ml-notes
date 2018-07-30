@@ -1,7 +1,9 @@
-\section{Decision Trees}
-Decision Tree.
-
+\section{Classification Tree}
+In this section, we focus on classification trees. First we assume that the features are discrete. We want to
+find a tree that can determine to which class an example belongs \magenta{given any combination of features}.
 \subsection{General Algorithm}
+The general algorithm for generating a classification tree is very simple. It recursively splits the
+node into subtrees according to a given rule until some stop conditions occur.
 % Pseudocode of decision tree algorithm.
 \begin{algorithm}
     \caption{Decision Tree}\label{decision_tree}
@@ -11,33 +13,154 @@ Decision Tree.
         \Ensure a decision tree.
         \Procedure{DT}{$D, A$}
             \State Generate a node.
-            \If{$y_i = c, \forall i = 1, \ldots, m$} \Comment{All samples have 
+            \If{$y_i = c, \forall~ i = 1, \ldots, m$} \Comment{All samples have 
             the same label}
-                \State mark the node as a leaf with label $c$; \Return
+                \State mark the node as a leaf with label $c$.
+                \State \Return
             \EndIf
             \If{$A = \emptyset$ \OR samples of $D$ take the same value on each
             attribute from $A$}\Comment{attributes from $A$ cannot distinguish
             elements of $D$}
-                \State mark the node as a leaf with the majority label of $D$; 
-                \Return
+                \State mark the node as a leaf with the majority label of $D$. 
+                \State \Return
             \EndIf
             \State Choose the \textit{best} attribute $a_*$ from $A$.\label{measurement}
-            \ForAll{possible value $a_*^v$ of $a_*$}
-                \State generate a branch from node.
-                \State let $D_v$ be all samples that take value $a_*^v$ on attribute
-                $a_*$.
-                \If{$D_v = \emptyset$} \Comment{no sample of $D$ takes value $a_*^v$
-                on $a_*$}
-                    \State mark the branch as a leaf with the majority label of 
-                    $D$; \Return
-                \Else
-                    \State set the branch to \Call{DT}{$D_v, A-\{a_*\}$}.
-                \EndIf
-            \EndFor
+            \If{\NOT worthSplitting$(D, a_*)$}\label{worthSplitting}\Comment{Not worth splitting.}
+                \State mark the node as a leaf with the majority label of $D$.
+                \State \Return
+            \Else
+                \ForAll{possible value $a_*^v$ of $a_*$}
+                    \State generate a branch from the node.
+                    \State let $D_v$ be all samples that take value $a_*^v$ on attribute
+                    $a_*$.
+                    \If{$D_v = \emptyset$} \Comment{no sample of $D$ takes value $a_*^v$
+                    on $a_*$}
+                        \State mark the branch as a leaf with the majority label of 
+                        $D$.
+                        \State \Return
+                    \Else
+                        \State set the branch to \Call{DT}{$D_v, A-\{a_*\}$}.
+                    \EndIf
+                \EndFor
+            \EndIf
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
 \subsection{Measurement}
 
-The line \algref{decision_tree}{measurement}. 
+The line~\algref{decision_tree}{measurement} and~\algref{decision_tree}{worthSplitting} are the key points of
+the algorithm. Namely, we need some reasonable measurement to choose the best feature and decide whether it is
+necessary to do the split. As ususal, we find some loss function $L$ which is defined on a single node.
+For any feature $a$, let ${\{D^v\}}_v$ be a splitting of $D$ according to it. Then $L$ can be extended to 
+${\{D^v\}}_v$, the tree after splitting, in a natural way:
+\begin{equation}\label{loss_tree}
+    L(D, a) = \sum_v \frac{|D^v|}{|D|}L(D^v)
+\end{equation}
+Our goal is to find a feature that minimize the above loss. That is, the best feature $a_*$ is given by:
+$$a_* = \argmin_a L(D, a)$$
+Notice that before splitting, the loss on the single node is $L(D)$. Hence we can define the gain of a
+splitting\footnote{i.e.\ the amount of loss reduced by the splitting.} as 
+\begin{equation}
+    \gain(D, a) = L(D) - L(D, a)
+\end{equation}
+If the gain is too small, for example, less than a preset threshold $\varepsilon \geqslant 0$, then we decide
+that it is not worth splitting. And also notice that 
+$$\argmax_a \gain(D, a) = \argmin_a L(D, a)$$
+We can combine the above two metrics into a single one.
+
+\subsubsection{Information Gain}
+\begin{df}[Information Entropy]
+    The \textbf{information entropy} of a discrete random variable $X$ is defined as:
+    \begin{equation}
+        H(X) = \E[-\log_2(\p(X))]
+    \end{equation}
+    If $X \in \{x_1, \dotsc, x_n\}$ and $\p(x_i) = p_i$\,, then the above entropy can be written as:
+    $$H(X) = -\sum_{i=1}^n p_i\log_2 p_i$$
+\end{df}
+\begin{re}
+    It is easy to see that:
+    \begin{compactenum}
+        \item $H(X) \geqslant 0$
+        \item $H$ takes the minimal value when $p_1 = 1$. 
+    \end{compactenum}
+\end{re}
+
+For any training dataset \dataset, let $\mathcal{Y}$ be the label space and $Y \in \mathcal{Y}$ the random
+variable determined by $D$.
+We can define the entropy of $D$ as the entropy of $Y$:
+\begin{equation}
+    \ent(D) = - \sum_{i=1}^{|\mathcal{Y}|}p_i\log_2 p_i
+\end{equation}
+where $p_i$ is the probability of the $i$-th label occuring in $D$.
+
+Similarly, we have the conditional entropy of two random variables $X, Y$:
+\begin{df}[Conditional Entropy]
+    The entropy of $X$ given $Y$ is defined as
+    \begin{equation}
+        \begin{split}
+        H(X | Y) &= \sum_{y} p(y) H(X | Y=y)\\
+                 &= - \sum_{y}p(y) \sum_{x} p(X=x | Y=y)\log_2 p(X=x | Y=y)\\
+                 &= -\sum_{x, y} p(x, y)\log_2 \frac{p(x, y)}{p(y)}
+        \end{split}
+    \end{equation}
+\end{df}
+
+Notice that the conditional entropy has the same form as the loss in~\eqref{loss_tree}.
+That is, for any possible value $a^v$ of $a$, let
+$D^v = \{\V{x}_i | y_i = a^v\}$, i.e.\ $D^v$ is the collection of those example with label $a^v$. Then the
+conditional entropy of $D$ w.r.t.\ $a$ can be written as
+\begin{equation}
+    \ent(D, a) = \sum_{v} \frac{|D^v|}{|D|}\ent(D^v)
+\end{equation}
+Hence the \textbf{information gain} of the splitting according to $a$ is\marginnote{Remember we want to 
+reduce\\ the entropy of the tree.}
+\begin{equation}
+    \begin{split}
+    \gain(D, a) &= \ent(D) - \ent(D, a)\\
+                &= \ent(D) - \sum_{v} \frac{|D^v|}{|D|}\ent(D^v)
+    \end{split}
+\end{equation}
+Of course, we want to choose $\displaystyle a_* = \max_a \gain(D, a)$ as the best feature in 
+line~\algref{decision_tree}{measurement}. And it is worth splitting the tree only if 
+$\gain(D, a_*) \geqslant \varepsilon$
+for some preset threshold $\varepsilon \geqslant 0$. This kind of measurement is adopted by the ID3 algorithm.
+
+\subsubsection{Information Gain Ratio}
+When all samples in $D$ have the same label, then it's easy to see that
+$$\ent(D) = - 1 \cdot \log_2 1 = 0$$
+Hence if some feature takes different values on each example, then the conditional entropy is $0$, and the
+information gain is maximal. That is, information gain favours those features with more possible values. To 
+reduce this bias, we introduce the information gain ratio. Let 
+$$\operatorname{IV}(a) = - \sum_v \frac{|D^v|}{|D|}\log_2\frac{|D^v|}{|D|}$$
+be the \textbf{intrinsic value} of $a$, then the information gain ratio w.r.t.\ $a$ is defined as:
+\begin{equation}
+    \operatorname{GainRatio}(D, a) = \frac{\gain(D, a)}{\operatorname{IV}(a)}
+\end{equation}
+Notice that when $a$ only takes one value, then $\operatorname{IV}(a) = 0$. Hence the information gain ratio
+favours those features with less values. In order to balance between gain and gain ratio, we can 
+\magenta{first choose
+those features with information gain above average, then choose the one with highest gain ratio from them}, as
+in C4.5 algorithm. As ususal, we can compare the gain ratio with the threshold $\varepsilon$ to determine
+whether to split the tree or not.
+
+\subsubsection{Gini Index}
+The Gini index of the training set $D$ is
+\begin{equation}
+    \begin{split}
+    \operatorname{Gini}(D) &= \sum_{i}\sum_{i'}p_i p_{i'}\\
+                           &= 1 - \sum_{i=1}^{|\mathcal{Y}|} p_i^2
+    \end{split}
+\end{equation}
+Namely, it is the probability that you get two different labels when you randomly pick two examples from $D$.
+That is, it reflects the purity of the node. As usual, the Gini index of $D$ w.r.t.\ $a$ can be defined as:
+\begin{equation}
+    \operatorname{Gini}(D, a) = \sum_v \frac{|D^v|}{|D|}\operatorname{Gini}(D^v)
+\end{equation}
+which measures the purity of the tree after splitting. Then we can use Gini index as the loss function in the
+measurement.
+
+
+\subsection{Pruning}
+
+\section{Classification and Regression Tree}
