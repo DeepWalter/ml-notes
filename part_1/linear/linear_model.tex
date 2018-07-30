@@ -1,4 +1,63 @@
-\section{Linear Models}
 In a linear model, the learner takes the form of a (affine) linear function
 $$y = \langle\V{w}, \V{x}\rangle + b = \langle\hat{\V{w}}, \hat{\V{x}}\rangle$$
 where $\hat{\V{w}}=(\V{w}, b),\;\hat{\V{x}} = (\V{x}, 1)$.
+\section{Linear Regression}
+
+\section{Logistic Regression}
+
+\section{Linear Discriminant Analysis}
+The idea of linear discriminant analysis is to find a line with direction $\V{w}$ \st when
+projected to this line, examples with the same label will stay close while examples with different
+labels will be far away. When predicting, we first project the example onto the line, then assign it the
+label of the group of examples which is closest to it.
+
+Let \dataset\ be the data set, $\mathcal{Y} = \{0, 1\}$ the label space. Let\marginnote{$n_0 + n_1 = m$ and
+$\V{\mu}_i$ is the center of examples with label $i$.} 
+$X_i \in \mathbb{R}^{n_i \times n}$ be the matrix of all examples with label $i$ and 
+$\V{\mu}_i \in \mathbb{R}^{1 \times n}$ the mean vector of all such examples. Let 
+$$ \Sigma_i = \T{(X_i - \V{\mu}_i)}(X_i - \V{\mu}_i)$$
+be the covariance matrix of all examples with label $i$. After
+projecting onto the line $\V{w}$, $X_i$ becomes $X_i \T{\V{w}}$, and $\V{\mu}_i$ becomes
+$\V{\mu}_i\T{\V{w}}$. Hence the covariance matrix becomes $\V{w} \Sigma_i \T{\V{w}}$, which is a real number.
+To make examples with the same label stay close and examples with different labels stay away, we want small 
+variances $\V{w} \Sigma_i \T{\V{w}}$ and a large distance $\norm{\V{\mu}_0\T{\V{w}} - \V{\mu}_1\T{\V{w}}}^2$.
+That is, we want to maximize
+\begin{equation}\label{lda_J}
+    J = \frac{\norm{\V{\mu}_0\T{\V{w}} - \V{\mu}_1\T{\V{w}}}^2}{\V{w} \Sigma_0 \T{\V{w}} + 
+    \V{w} \Sigma_1 \T{\V{w}}}
+\end{equation}
+If we define the \textbf{within-class scatter matrix} as
+\begin{equation}
+    S_w = \sum_{\V{x}\in X_0} \T{(\V{x} - \V{\mu}_0)}(\V{x} - \V{\mu}_0)
+    + \sum_{\V{x}\in X_1} \T{(\V{x} - \V{\mu}_1)}(\V{x} - \V{\mu}_1)
+\end{equation}
+and \textbf{between-class scatter matrix} as
+\begin{equation}
+    S_b = \T{(\V{\mu}_0 - \V{\mu}_1)}(\V{\mu}_0 - \V{\mu}_1)
+\end{equation}
+then equation~\eqref{lda_J} becomes
+\begin{equation}
+    J = \frac{\V{w}S_b\T{\V{w}}}{\V{w}S_w\T{\V{w}}}
+\end{equation}
+which is the \textbf{generalized Rayleigh quotient} of $S_b$ and $S_w$.
+
+To maximize the generalized Rayleigh quotient, we solve the equivalent problem
+$$ \argmax_{\V{w}} \V{w} S_b \T{\V{w}}\quad\st \V{w}S_w \T{\V{w}} = 1$$
+Let $f(\V{w}, \lambda) = \V{w} S_b \T{\V{w}} + \lambda(1 - \V{w}S_w \T{\V{w}})$ be the Lagrangian, then 
+$\pfrac{f}{\V{w}} = 0$ implies
+\begin{equation}
+    \V{w} S_b = \lambda \V{w} S_w
+\end{equation}
+Since $\V{w} S_b = \alpha (\V{\mu}_0 - \V{\mu}_1)$ for some $\alpha$, we have
+\begin{equation}\label{lda_w}
+    \V{w} = \frac{\alpha}{\lambda} (\V{\mu}_0 - \V{\mu}_1)S_w^{-1}
+\end{equation}
+Notice that we have the restriction $\V{w}S_w\T{\V{w}} = 1$, which gives
+\begin{equation}\label{lda_w_coeffi}
+    \frac{\lambda}{\alpha} = \sqrt{(\V{\mu}_0 - \V{\mu}_1)S_w^{-1}\T{(\V{\mu}_0 - \V{\mu}_1)}}
+\end{equation}
+Combine equation~\eqref{lda_w} and~\eqref{lda_w_coeffi}, we have
+\begin{equation}
+    \V{w} = 
+    \frac{(\V{\mu}_0 - \V{\mu}_1)S_w^{-1}}{\sqrt{(\V{\mu}_0 - \V{\mu}_1)S_w^{-1}\T{(\V{\mu}_0 - \V{\mu}_1)}}}
+\end{equation}
