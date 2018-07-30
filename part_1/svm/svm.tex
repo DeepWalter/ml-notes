@@ -164,7 +164,7 @@ Let $\alpha^*_{i_0} > 0$. Then $\alpha_{i_0}^* h_{i_0}(\V{w}^*, b^*) = 0$ implie
 In summary, we have
 \begin{equation}\label{solution_hard_SVM}
     \begin{cases}
-        &\V{w}^* = \sum_i \alpha_i^* y_i \V{x}_i\\
+        &\V{w}^* = \sum_i \alpha_i^* y_i \V{x}_i\vspace{5pt}\\
         &b^* = y_{i_0} - \sum_i \alpha_i^* y_i \langle \V{x}_i, \V{x}_{i_0}\rangle
     \end{cases}
 \end{equation}
@@ -235,7 +235,7 @@ If there is some $\alpha_{i_0}$ such that
 $0 < \alpha_{i_0}^* < C$, then the solution of the soft SVM~\eqref{soft_SVM} can be written as:
 \begin{equation}
     \begin{cases}
-        &\V{w}^* = \sum_i y_i \alpha^*_i \V{x}_i\\
+        &\V{w}^* = \sum_i y_i \alpha^*_i \V{x}_i\vspace{5pt}\\
         &b^* = y_{i_0} - \sum_i y_i \alpha^*_i \langle \V{x}_i, \V{x}_{i_0}\rangle
     \end{cases}
 \end{equation}
@@ -266,7 +266,7 @@ becomes
 and its solution satifies
 \begin{equation}
     \begin{cases}
-        &\V{w}^* = \sum_i \alpha_i^* y_i \phi(\V{x}_i)\\
+        &\V{w}^* = \sum_i \alpha_i^* y_i \phi(\V{x}_i)\vspace{5pt}\\
         &b^* = y_{i_0} - \sum_i \alpha_i^* y_i \kappa(\V{x}_i, \V{x}_{i_0})
     \end{cases}
 \end{equation}

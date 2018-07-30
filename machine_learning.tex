@@ -20,7 +20,9 @@
 \usepackage[adjust, nocompress, space]{cite}
 \usepackage{setspace}
 \usepackage[perpage, flushmargin, symbol*]{footmisc}
-
+\usepackage{array}
+\usepackage{diagbox}
+\usepackage{booktabs}
 
 
 
@@ -62,6 +64,7 @@
 
 % =============================== Operators ====================================
 \DeclareMathOperator{\ent}{Entropy}
+\DeclareMathOperator{\gain}{Gain}
 \DeclareMathOperator*{\p}{\mathbb{P}} % probability.
 \DeclareMathOperator{\sign}{sign}
 \DeclareMathOperator*{\argmax}{argmax}
@@ -75,18 +78,20 @@
 
 % =============================== New Commands =================================
 % Logical connectives:
-\newcommand{\OR}{\textbf{OR} } % a space is needed here.
-\newcommand{\AND}{\textbf{AND} } 
-\newcommand{\XOR}{\textbf{XOR} }
+\newcommand{\OR}{\textbf{OR}\ } % a space is needed here.
+\newcommand{\AND}{\textbf{AND}\ } 
+\newcommand{\XOR}{\textbf{XOR}\ }
+\newcommand{\NOT}{\textbf{NOT}\ }
 
 
 % Math commands:
 \newcommand{\T}[1]{\ensuremath{{#1}^\mathsf{T}}} % Matrix transposition.
 \newcommand{\inv}[1]{\ensuremath{{#1}^{-1}}} % Inversion.
 \newcommand{\V}[1]{\ensuremath{\boldsymbol{#1}}}
-\newcommand{\forany}{\forall~} % append a non-breakable whitespace.
-\newcommand{\thereis}{\exists~} 
+\newcommand{\forany}{\ensuremath{\forall~}} % append a non-breakable whitespace.
+\newcommand{\thereis}{\ensuremath{\exists~}}
 \newcommand{\linspan}[1]{\ensuremath{\operatorname{\mathbf{span}}\left\{{#1}\right\}}}
+\newcommand{\diff}[1]{\ensuremath{\mathrm{d}{#1}}}
 
 % Shorthand commands:
 \newcommand{\hypo}[1]{\ensuremath{{#1}: \mathcal{X} \longrightarrow \mathcal{Y}}} % Hypothesis function.
