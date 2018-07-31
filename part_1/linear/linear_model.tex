@@ -21,7 +21,7 @@ projecting onto the line $\V{w}$, $X_i$ becomes $X_i \T{\V{w}}$, and $\V{\mu}_i$
 $\V{\mu}_i\T{\V{w}}$. Hence the covariance matrix becomes $\V{w} \Sigma_i \T{\V{w}}$, which is a real number.
 To make examples with the same label stay close and examples with different labels stay away, we want small 
 variances $\V{w} \Sigma_i \T{\V{w}}$ and a large distance $\norm{\V{\mu}_0\T{\V{w}} - \V{\mu}_1\T{\V{w}}}^2$.
-That is, we want to maximize
+That is, we want to maximize\marginnote{Notice that $J$ is independent of the module of $\V{w}$.}
 \begin{equation}\label{lda_J}
     J = \frac{\norm{\V{\mu}_0\T{\V{w}} - \V{\mu}_1\T{\V{w}}}^2}{\V{w} \Sigma_0 \T{\V{w}} + 
     \V{w} \Sigma_1 \T{\V{w}}}
