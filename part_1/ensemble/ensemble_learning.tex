@@ -33,7 +33,8 @@ Consider the exponential loss function
 We want to find a linear combination of base learners 
 $$ H(\V{x}) = \sum_{t=1}^T \alpha_t h_t(\V{x})$$
 that minimize it. Although it is difficult to find such $H$ as a whole, we can approach this problem step by
-step. That is, we first find some $h_1$ and $\alpha_1$ \st $H_1 = \alpha_1 h_1$ minimize the exponential loss,
+step. That is,\marginnote{This is the so called greedy\\ method.} 
+we first find some $h_1$ and $\alpha_1$ \st $H_1 = \alpha_1 h_1$ minimize the exponential loss,
 then we find some $h_2$ and $\alpha_2$ \st $H_2 = H_1 + \alpha_2 h_2$ minimize the exponential loss too. And
 we carray on this process until $t = T$. Assume we have $H_{t-1}$ and want to find the next learner and its
 weight, that is, we want to find $\alpha_t$ and $h_t$ \st $H_t = H_{t-1} + \alpha_t h_t$ minimize the 
@@ -67,12 +68,36 @@ implies
 \end{align}
 which justifies the choice of $\mathcal{D}_t$ in line~\algref{AdaBoost}{AdaBoost_distritution}. If we plug
 equation~\eqref{AdaBoost_weight} into~\eqref{Ada_exp_loss_expansion}, we get
-$$L_{\exp}(H_t | \mathcal{D}) = 2C_{t-1}\cdot\sqrt{\varepsilon_t (1-\varepsilon_t)}$$
+\begin{equation}\label{ada_lost_t}
+L_{\exp}(H_t | \mathcal{D}) = 2C_{t-1}\cdot\sqrt{\varepsilon_t (1-\varepsilon_t)}
+\end{equation}
 Since the performance of the base learner is slightly above the average, that is, 
 $\varepsilon_t < \frac{1}{2}$, the minimum of the exponential loss is achieved at the $h_t$ which has 
 the minimal error rate w.r.t.\ $\mathcal{D}_t$. That is, $h_t$ is the output of the algorithm w.r.t.\ the 
 distribution $\mathcal{D}_t$ over the training data.
 
+Moreover, notice that
+$$C_{t-1} = \E_{\V{x}\sim\mathcal{D}}[e^{-f(\V{x})H_{t-1}(\V{x})}] = L_{\exp}(H_{t-1} | \mathcal{D})$$
+equation~\eqref{ada_lost_t} implies that
+\begin{align}
+    L_{\exp}(H | \mathcal{D}) &= \prod_{t=1}^T\sqrt{4\varepsilon_t(1 - \varepsilon_t)}\nonumber\\
+                              &= \prod_{t=1}^T\sqrt{1 - 4\gamma_t^2}
+\end{align}
+where $\gamma_t = \frac{1}{2} - \varepsilon_t$ and we use the fact that $L_{\exp}(0 | \mathcal{D}) = 0$. Since
+$$ 1 + x \leqslant e^x\quad\forany x \in \mathbb{R}$$
+we have
+$$ \sqrt{1 - 4\gamma_t^2} \leqslant \sqrt{e^{- 4\gamma_t^2}} = e^{-2\gamma_t^2}$$
+which implies
+\begin{equation}
+    L_{\exp}(H | \mathcal{D}) \leqslant e^{-2\sum_{t=1}^T\gamma_t^2}
+\end{equation}
+If there is some $\varepsilon \in (0, \frac{1}{2})$ \st $\varepsilon_t \leqslant \varepsilon\;\forany t$, 
+then we have
+$\gamma_t \geqslant \gamma = \frac{1}{2} - \varepsilon$, hence 
+\begin{equation}
+    L_{\exp} (H | \mathcal{D}) \leqslant e^{-2\gamma^2 T}
+\end{equation}
+That is, the loss function $L_{\exp}$ decreases exponentially in $T$.
 
 \section{Bagging}
 Bagging is short for bootstrap aggregating, namely we use bootstrap sampling to sample $T$ groups of training
