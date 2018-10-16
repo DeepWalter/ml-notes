@@ -73,7 +73,7 @@ which is obviously equivalent to:
 \section{Soft SVM}
 The hard SVM works well when the data set is linear separable, but it behaves poorly on the sets which are not
 linear separable since all the restrictions cannot be satisfied at the same time. In order to adapt to the 
-non-separable case, we can allow some points to break the restriction, and penalize them in the optimization
+non-separable case, we can allow some points to violate the restriction, and penalize them in the optimization
 target. That is, we can consider the following problem:
 \begin{equation}\label{soft_SVM_original}
     \argmin_{\V{w}, b} \frac{||\V{w}||^2}{2} + C\sum_{i=1}^{m}\max\big(0, 1 - y_i(\langle\V{w}, \V{x}_i\rangle
@@ -83,7 +83,7 @@ Here, if $y_i(\langle\V{w}, \V{x}_i\rangle + b) < 1$, we add the penalization
 $1 - y_i(\langle\V{w}, \V{x}_i\rangle +b)$ to the 
 optimization target; otherwise, no penalization is added. The constant $C > 0$ is the weight that determines 
 how much the penalization matters (or how much you can violate the restrictions). For example, if $C = 0$, 
-then the penalization dosen't matter and you can violate all the restrictions; if $C = +\infty$, then the 
+then the penalization dosen't matter at all and you can violate all the restrictions; if $C = +\infty$, then the 
 penalization matters most and you cannot violate any single restriction.\par
 If we introduce the slack variabels $\xi_i = \max\big(0, 1 - y_i(\langle\V{w}, \V{x}_i\rangle +b)\big)$, then
 the problem~\eqref{soft_SVM_original} becomes:
