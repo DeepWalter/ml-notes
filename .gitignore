@@ -11,3 +11,7 @@
 *.brf
 *.blg
 *.bbl
+
+# minted
+_minted*
+*.pyg
