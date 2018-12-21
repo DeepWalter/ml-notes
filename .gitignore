@@ -1,4 +1,4 @@
-# no temporary files
+# No temporary files.
 *.aux
 *.fdb_latexmk
 *.fls
@@ -11,6 +11,9 @@
 *.brf
 *.blg
 *.bbl
+
+# Track the output pdf file.
+!machine_learning.pdf
 
 # minted
 _minted*
