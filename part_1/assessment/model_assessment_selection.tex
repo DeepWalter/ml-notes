@@ -186,7 +186,7 @@ larger AUC\@.
 
 Let's consider the bias and variance decomposition of supervised learning. Asssume $\mathcal{X}$ is the
 instance space and $\mathcal{Y}$ the label space. Let $\p$ be the joint distribution over
-$\mathcal{X} \times \mathcal{Y}$ and $p$ the joint pdf. Let \dataset\ be any i.i.d.\ dataset w.r.t.\ the
+$\mathcal{X} \times \mathcal{Y}$ and $p$ the joint pdf. Let \dataset\ be any \iid dataset \wrt the
 distribution $\p$, that is $D \sim \p^m$. For any given instance \V{x}, we have
 
 \begin{df}[Expected label]
@@ -196,7 +196,7 @@ distribution $\p$, that is $D \sim \p^m$. For any given instance \V{x}, we have
     \end{equation}
 \end{df}
 
-Notice that $\bar{y}(\V{x})$ is deterministic w.r.t.\ \V{x}, it is the true model that we want to approximate.
+Notice that $\bar{y}(\V{x})$ is deterministic \wrt \V{x}, it is the true model that we want to approximate.
 Naturally, the data-intrinsic noise is defined as:
 \begin{equation}
     \E_{\V{x}, y}\left[{(\bar{y}(\V{x}) - y)}^2\right] = \int_{\V{x}} \int_y {(\bar{y}(x) - y)}^2 p(\V{x}, y)
